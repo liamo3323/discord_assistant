@@ -1,7 +1,18 @@
 #!/bin/bash
 
-# Change to the project directory
-cd ~/discord_assistant || exit 1  # Change this to your project directory
+# Function to handle cleanup on exit
+cleanup() {
+    echo "Cleaning up..."
+    exit 0
+}
+
+# Trap SIGINT and SIGTERM signals
+trap cleanup SIGINT SIGTERM
+
+
+# Navigate to the bot directory
+cd /home/discord-rasp/discord_assistant || { echo "Directory not found"; exit 1; }
+
 
 # Pull the latest changes from the Git repository
 echo "Pulling the latest changes from Git..."

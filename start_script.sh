@@ -13,7 +13,6 @@ trap cleanup SIGINT SIGTERM
 # Navigate to the bot directory
 cd /home/discord-rasp/discord_assistant || { echo "Directory not found"; exit 1; }
 
-
 # Pull the latest changes from the Git repository
 echo "Pulling the latest changes from Git..."
 git pull origin main  # Change 'main' to your branch name if different

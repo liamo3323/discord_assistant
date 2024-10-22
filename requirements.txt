@@ -1,3 +1,5 @@
 virtualenv
 discord.py
 python_dotenv
+requests
+bs4

@@ -3,3 +3,4 @@ discord.py
 python_dotenv
 requests
 bs4
+pyyaml

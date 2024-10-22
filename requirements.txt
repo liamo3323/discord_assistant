@@ -2,4 +2,4 @@ virtualenv
 discord.py
 python_dotenv
 requests
-BeautifulSoup
+bs4

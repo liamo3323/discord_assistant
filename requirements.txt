@@ -1,7 +1,8 @@
-virtualenv
+asyncio
+bs4
+datetime
 discord.py
 python_dotenv
-requests
-bs4
 pyyaml
-datetime
+requests
+virtualenv

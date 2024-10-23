@@ -67,8 +67,6 @@ async def on_message(message):
 
         await message.channel.send(embed=embed)
 
-    else:
-        await message.add_reaction('👍')
 
 async def main():
     asyncio.create_task(web_yoink())

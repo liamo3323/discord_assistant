@@ -17,7 +17,7 @@ def getSoup_headers(link, headers):
     soup = BeautifulSoup(html, "html.parser")
     return soup
 
-def get_games_info():
+async def get_games_info():
 
     last_page = int((getSoup("https://gg.deals/games/?page=1").find("li", {"class": "page last-page with-spacer"}).find("a",{"aria-label": "Last page"}).text).strip("..."))
     for i in range(1, 2): #! UPDATE WHEN DEPLOYED

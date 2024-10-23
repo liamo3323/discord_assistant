@@ -5,6 +5,7 @@ import discord
 import logging
 import yaml
 import asyncio
+import time
 
 from web_yoinking import get_games_info
 from discord.ext import commands
@@ -19,21 +20,13 @@ intents = discord.Intents.default()
 intents.message_content = True 
 client = discord.Client(intents=intents)
 
-async def web_yoink():
-    print("Yoinking...")
-
-    await asyncio.sleep(60*60*24) # 24 hours
-    print("30 seconds later")
-    get_games_info()
-    await web_yoink()
 
 @client.event
 async def on_ready():
     print(f'Logged in as {client.user}')
     channel_id = 845742634244898836
     channel = await client.fetch_channel(channel_id)  # Use fetch_channel instead of get_channel
-    
-    await web_yoink()
+
 
     if os.path.exists('game_info.yaml'):
         with open('game_info.yaml', 'r') as file:
@@ -42,10 +35,24 @@ async def on_ready():
     else:
         print("game_info.yaml does not exist")
 
+
+async def web_yoink():
+    while True:
+        print("Yoinking...")
+        await get_games_info()
+        await asyncio.sleep(60)
+
+
 @client.event
 async def on_message(message):
     print(message.content)
     # channel.send("Hello, this message is from the bot!")
 
-get_games_info()
-client.run(TOKEN)
+
+async def main():
+    asyncio.create_task(web_yoink())
+    await client.start(TOKEN)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

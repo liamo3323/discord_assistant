@@ -2,3 +2,4 @@
 .env
 game_info.yaml
 *.log
+__pycache__/web_yoinking.cpython-311.pyc

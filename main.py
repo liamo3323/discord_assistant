@@ -9,7 +9,7 @@ import datetime
 import pandas
 import json
 
-from web_yoinking import get_games_info
+from web_yoinking import yoink_games_info
 from dotenv import load_dotenv
 
 
@@ -41,7 +41,7 @@ async def load_channel():
 async def web_yoink():
     while True:
         print("Yoinking...")
-        await get_games_info()
+        await yoink_games_info()
         await asyncio.sleep(3)
         await loading_json()
         await asyncio.sleep(60)
@@ -67,15 +67,15 @@ async def on_message(message):
             print(game)
             embed = discord.Embed(title=game[0]['name'],
                                 url=game[0]['url'],
-                                description=f"Historical Low - {game[0]['historical_low']}",
+                                description=f"Historical Low - £{game[0]['historical_low']}",
                                 colour=0x00b0f4,
                                 timestamp=datetime.datetime.now())
             embed.set_author(name="Silver Wolf")
             embed.add_field(name=game[0]['price_official_vendor'],
-                            value=f"Official Keys - {game[0]['price_official']}",
+                            value=f"Official Keys - £{game[0]['price_official']}",
                             inline=False)
             embed.add_field(name=game[0]['price_key_vendor'],
-                            value=f"Key Price - {game[0]['price_key']}",
+                            value=f"Key Price - £{game[0]['price_key']}",
                             inline=False)
             embed.set_image(url=game[0]['image_url'])
             embed.set_footer(text="Game Price Tracking")

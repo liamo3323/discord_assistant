@@ -1,10 +1,10 @@
-import time 
-
-from bs4 import BeautifulSoup
+import os 
 import json
 import requests
 import asyncio
 import re
+
+from bs4 import BeautifulSoup
 
 
 def getSoup(link):
@@ -13,82 +13,61 @@ def getSoup(link):
     soup = BeautifulSoup(html, "html.parser")
     return soup
 
-async def get_games_info(game:str = "metaphor-refantazio"):
+async def yoink_games_info():
 
-    game_name = ""
-    game_image_url = ""
-    game_historical_low = ""
+    tracking_list = await get_name_list()
+    for tracking in tracking_list:
+        game = tracking['name']
+        link = "https://gg.deals/game/{}/".format(game) # each page of the website
 
-    game_price_official = ""
-    game_price_official_vendor = ""
-    game_price_official_url = ""
+        soup = getSoup(link) # get info on the page
 
-    game_price_key = ""
-    game_price_key_vendor = ""
-    game_price_key_url = ""
+        # return if page not found
+        try:
+            ooops = soup.find("div", {"class": "error-content"}).find("div", {"class": "title"}).text
+        except AttributeError:
+            ooops = ""
 
-    link = "https://gg.deals/game/{}/".format(game) # each page of the website
+        if ooops == "Oooops!":
+                return
+        
+        # Find game id and name
+        title_image = soup.find("img", {"class": "image-game"})
+        game_image_url = title_image["src"]
+        game_name = title_image["alt"]
 
-    soup = getSoup(link) # get info on the page
+        # Find game historical low
+        historical_low_col = soup.find("div", {"class": "relative game-info-price-col historical game-header-price-box lowest-recorded expired"})
+        game_historical_low = historical_low_col.find("span", {"class": "price-inner numeric"}).text
 
-    # return if page not found
-    try:
-        ooops = soup.find("div", {"class": "error-content"}).find("div", {"class": "title"}).text
-    except AttributeError:
-        ooops = ""
+        # Find game official price
+        hoverable_box = soup.find_all("div", {"class": "load-more-content shadow-box-big-light"})
+        game_price_official_vendor = hoverable_box[0].find("div", {"class": "relative hoverable-box d-flex flex-wrap flex-align-center game-item cta-full item game-deals-item game-list-item keep-unmarked-container"})['data-shop-name']
+        game_price_official_url = "https://gg.deals{}/".format(hoverable_box[0].find("a", {"class": "d-flex flex-align-center shop-link"})["href"])
+        game_price_official = hoverable_box[0].find("a", {"class": "price game-price with-tooltip"}).find("span", {"class": "price-inner"}).text
 
-    if ooops == "Oooops!":
-            return
-    
-    # Find game id and name
-    title_image = soup.find("img", {"class": "image-game"})
-    game_image_url = title_image["src"]
-    game_name = title_image["alt"]
+        # Find game key price
+        game_price_key_vendor = hoverable_box[1].find("div", {"class": "relative hoverable-box d-flex flex-wrap flex-align-center game-item cta-full item game-deals-item game-list-item keep-unmarked-container"})['data-shop-name']
+        game_price_key_url = "https://gg.deals{}/".format(hoverable_box[1].find("a", {"class": "d-flex flex-align-center shop-link"})["href"])
+        game_price_key = hoverable_box[1].find("a", {"class": "price game-price with-tooltip"}).find("span", {"class": "price-inner"}).text
 
-    # Find game historical low
-    historical_low_col = soup.find("div", {"class": "relative game-info-price-col historical game-header-price-box lowest-recorded expired"})
-    game_historical_low = historical_low_col.find("span", {"class": "price-inner numeric"}).text
+        game_tracking = [
+            {
+                "name": game_name,
+                "image_url": game_image_url,
+                "historical_low": game_historical_low,
+                "price_official": game_price_official,
+                "price_official_vendor": game_price_official_vendor,
+                "price_official_url": game_price_official_url,
+                "price_key": game_price_key,
+                "price_key_vendor": game_price_key_vendor,
+                "price_key_url": game_price_key_url,
+                "url": link
+            }
+        ]
 
-    # Find game official price
-    hoverable_box = soup.find_all("div", {"class": "load-more-content shadow-box-big-light"})
-    game_price_official_vendor = hoverable_box[0].find("div", {"class": "relative hoverable-box d-flex flex-wrap flex-align-center game-item cta-full item game-deals-item game-list-item keep-unmarked-container"})['data-shop-name']
-    game_price_official_url = "https://gg.deals{}/".format(hoverable_box[0].find("a", {"class": "d-flex flex-align-center shop-link"})["href"])
-    game_price_official = hoverable_box[0].find("a", {"class": "price game-price with-tooltip"}).find("span", {"class": "price-inner"}).text
-
-    # Find game key price
-    game_price_key_vendor = hoverable_box[1].find("div", {"class": "relative hoverable-box d-flex flex-wrap flex-align-center game-item cta-full item game-deals-item game-list-item keep-unmarked-container"})['data-shop-name']
-    game_price_key_url = "https://gg.deals{}/".format(hoverable_box[1].find("a", {"class": "d-flex flex-align-center shop-link"})["href"])
-    game_price_key = hoverable_box[1].find("a", {"class": "price game-price with-tooltip"}).find("span", {"class": "price-inner"}).text
-
-    game_tracking = [
-         {
-            "name": game_name,
-            "image_url": game_image_url,
-            "historical_low": game_historical_low,
-            "price_official": game_price_official,
-            "price_official_vendor": game_price_official_vendor,
-            "price_official_url": game_price_official_url,
-            "price_key": game_price_key,
-            "price_key_vendor": game_price_key_vendor,
-            "price_key_url": game_price_key_url,
-            "url": link
-         }
-    ]
-
-    # try:
-    #     with open('tracking_game_prices.json', 'r') as json_file:
-    #         existing_games = json.load(json_file)  
-    # except FileNotFoundError:
-    #     existing_games = []
-
-    # existing_games.append(game_tracking)
-
-    # with open('tracking_game_prices.json', 'w') as json_file:
-    #     json.dump(existing_games, json_file, indent=4)
-
-
-    with open('tracking_game_prices.json', 'w') as json_file:
-        json.dump(game_tracking, json_file, indent=4)
+        with open('tracking_game_prices.json', 'w') as json_file:
+            json.dump(game_tracking, json_file, indent=4)
 
 async def name_formatting(name:str):
      # remove mention of PC from game name
@@ -102,5 +81,23 @@ async def name_formatting(name:str):
     name = name.strip('-')  # remove leading/trailing hyphens
     return name.lower()  # return in lowercase
 
+async def get_name_list():
+    with open('tracking_game_list.json', 'r') as file:
+        game_info = json.load(file)
+    return game_info
+
+async def add_game_track(name, price):
+    game_info = get_name_list
+    formatted_name = await name_formatting(name)
+    
+    for game in game_info:
+        if game['name'] == formatted_name:
+            print(f"Game '{name}' is already being tracked.")
+            return
+        
+    game_info.append({"name": formatted_name, "price": price})
+    with open('tracking_game_list.json', 'w') as file:
+        json.dump(game_info, file, indent=4)
+
 if __name__ == "__main__":
-    asyncio.run(get_games_info())
+    asyncio.run(yoink_games_info())

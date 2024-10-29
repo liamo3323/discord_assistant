@@ -9,7 +9,7 @@ import datetime
 import pandas
 import json
 
-from web_yoinking import yoink_games_info, add_game_track, name_formatting, link_valid
+from web_yoinking import yoink_games_info, add_game_track, name_formatting, get_name_list
 from dotenv import load_dotenv
 
 
@@ -22,6 +22,12 @@ intents = discord.Intents.default()
 intents.message_content = True 
 client = discord.Client(intents=intents)
 
+
+async def shutdown(ctx):
+    await ctx.send("Shutting down...")
+    await client.close()  # Gracefully close the bot
+
+
 async def loading_json():
     if os.path.exists('tracking_game_prices.json'):
         with open('tracking_game_prices.json', 'r') as file:
@@ -31,56 +37,74 @@ async def loading_json():
     else:
         print("tracking_game_prices.json does not exist")
 
-async def shutdown(ctx):
-    await ctx.send("Shutting down...")
-    await client.close()  # Gracefully close the bot
 
-async def load_channel():
-    await client.fetch_channel(845742634244898836)
+async def send_embed(game):
+            embed = discord.Embed(title=game['name'],
+                                url=game['url'],
+                                description=f"Historical Low - £{game['historical_low']}",
+                                colour=0x00b0f4,
+                                timestamp=datetime.datetime.now())
+            embed.set_author(name="Silver Wolf")
+            embed.add_field(name=game['price_official_vendor'],
+                            value=f"Official Keys - {game['price_official']}",
+                            inline=False)
+            embed.add_field(name=game['price_key_vendor'],
+                            value=f"Key Price - {game['price_key']}",
+                            inline=False)
+            embed.set_image(url=game['image_url'])
+            embed.set_footer(text="Game Price Tracking")
+            return embed
+
+
+async def check_below_price():
+    tracking_info = await get_name_list()
+
+    with open('tracking_game_prices.json', 'r') as file:
+        yoinked_info = json.load(file)
+
+    for x in range (len(tracking_info)):
+        target_price = float(tracking_info[x]['target_price'])
+        official_price = float(yoinked_info[x]['price_official'].replace("~", "").replace("\u00a3", ""))
+        key_price = float(yoinked_info[x]['price_key'].replace("~", "").replace("\u00a3", ""))
+
+        if target_price > official_price or target_price > key_price:
+            print(f"{tracking_info[x]['name']} is below the set price of {tracking_info[x]['target_price']}")
+
+            channel = await client.fetch_channel(845742634244898836)
+            await channel.send(embed= await send_embed(yoinked_info[x]))
+
 
 async def web_yoink():
     while True:
         print("Yoinking...")
         await yoink_games_info()
-        await asyncio.sleep(3)
+        await asyncio.sleep(2)
+
         await loading_json()
+        await asyncio.sleep(3)
+
+        await check_below_price()
         await asyncio.sleep(60)
 
 @client.event
 async def on_ready():
     print(f'Logged in as {client.user}')
-    await load_channel()
 
 
 @client.event
 async def on_message(message):
     print(message.content)
-
     if message.author == client.user:
         return
+
 
     if message.content == '!updates':
         game_info = await loading_json()
         for game in game_info:
-            print(game)
-            embed = discord.Embed(title=game[0]['name'],
-                                url=game[0]['url'],
-                                description=f"Historical Low - {game[0]['historical_low']}",
-                                colour=0x00b0f4,
-                                timestamp=datetime.datetime.now())
-            embed.set_author(name="Silver Wolf")
-            embed.add_field(name=game[0]['price_official_vendor'],
-                            value=f"Official Keys - {game[0]['price_official']}",
-                            inline=False)
-            embed.add_field(name=game[0]['price_key_vendor'],
-                            value=f"Key Price - {game[0]['price_key']}",
-                            inline=False)
-            embed.set_image(url=game[0]['image_url'])
-            embed.set_footer(text="Game Price Tracking")
-            await message.channel.send(embed=embed)
+            await message.channel.send(embed=await send_embed(game))
+
 
     if '!track' in message.content.lower():
-        # !track Another Crab's Treasure PC 25
         content = str(message.content).split()
         name = " ".join(content[1:-1])
         formatted_name = await name_formatting(name)

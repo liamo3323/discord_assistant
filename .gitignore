@@ -1,5 +1,4 @@
 .venv
 .env
-game_info.yaml
 *.log
 __pycache__/

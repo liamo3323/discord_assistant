@@ -6,12 +6,12 @@ import re
 
 from bs4 import BeautifulSoup
 
-
 def getSoup(link):
     req = requests.get(link)
     html = req.content
     soup = BeautifulSoup(html, "html.parser")
     return soup
+
 
 async def yoink_games_info():
     tracking_list = await get_name_list()
@@ -30,9 +30,18 @@ async def yoink_games_info():
             game_image_url = title_image["src"]
             game_name = title_image["alt"]
 
-            # Find game historical low
+            # Find official historical low
             historical_low_col = soup.find("div", {"class": "relative game-info-price-col historical game-header-price-box lowest-recorded expired"})
-            game_historical_low = historical_low_col.find("span", {"class": "price-inner numeric"}).text
+            official_historical_low = historical_low_col.find("span", {"class": "price-inner numeric"}).text
+
+            # Find key historical low
+            historical_low_col = soup.find("div", {"class": "relative game-info-price-col game-header-price-box best-deal"})    
+            key_historical_low = historical_low_col.find("span", {"class": "price-inner numeric"}).text
+
+            official_historical_low = official_historical_low.replace('~', '').replace('\u00a3', '')
+            key_historical_low = key_historical_low.replace('~', '').replace('\u00a3', '')
+
+            game_historical_low = min(float(official_historical_low), float(key_historical_low))
 
             # Find game official price
             hoverable_box = soup.find_all("div", {"class": "load-more-content shadow-box-big-light"})
@@ -45,7 +54,7 @@ async def yoink_games_info():
             game_price_key_url = "https://gg.deals{}/".format(hoverable_box[1].find("a", {"class": "d-flex flex-align-center shop-link"})["href"])
             game_price_key = hoverable_box[1].find("a", {"class": "price game-price with-tooltip"}).find("span", {"class": "price-inner"}).text
 
-            game_tracking.append([
+            game_tracking.append(
                 {
                     "name": game_name,
                     "image_url": game_image_url,
@@ -58,12 +67,11 @@ async def yoink_games_info():
                     "price_key_url": game_price_key_url,
                     "url": link
                 }
-            ])
+            )
 
         with open('tracking_game_prices.json', 'w') as json_file:
             json.dump(game_tracking, json_file, indent=4)
-            
-
+        
 
 async def link_valid(soup):
     try:
@@ -75,6 +83,7 @@ async def link_valid(soup):
         return False
     else:
         return True
+
 
 async def name_formatting(name:str):
      # remove mention of PC and Edition from game name
@@ -88,10 +97,12 @@ async def name_formatting(name:str):
     name = name.strip('-')  # remove leading/trailing hyphens
     return name.lower()  # return in lowercase
 
+
 async def get_name_list():
     with open('tracking_game_list.json', 'r') as file:
         game_info = json.load(file)
     return game_info
+
 
 async def add_game_track(name, price):
     game_info = await get_name_list()
@@ -102,9 +113,10 @@ async def add_game_track(name, price):
             print(f"Game '{name}' is already being tracked.")
             return
         
-    game_info.append({"name": formatted_name, "price": price})
+    game_info.append({"name": formatted_name, "target_price": price})
     with open('tracking_game_list.json', 'w') as file:
         json.dump(game_info, file, indent=4)
+
 
 if __name__ == "__main__":
     # asyncio.run(add_game_track("Another Crab's Treasure PC Edition", 25))

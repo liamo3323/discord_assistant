@@ -65,28 +65,28 @@ async def on_message(message):
             print(game)
             embed = discord.Embed(title=game[0]['name'],
                                 url=game[0]['url'],
-                                description=f"Historical Low - £{game[0]['historical_low']}",
+                                description=f"Historical Low - {game[0]['historical_low']}",
                                 colour=0x00b0f4,
                                 timestamp=datetime.datetime.now())
             embed.set_author(name="Silver Wolf")
             embed.add_field(name=game[0]['price_official_vendor'],
-                            value=f"Official Keys - £{game[0]['price_official']}",
+                            value=f"Official Keys - {game[0]['price_official']}",
                             inline=False)
             embed.add_field(name=game[0]['price_key_vendor'],
-                            value=f"Key Price - £{game[0]['price_key']}",
+                            value=f"Key Price - {game[0]['price_key']}",
                             inline=False)
             embed.set_image(url=game[0]['image_url'])
             embed.set_footer(text="Game Price Tracking")
             await message.channel.send(embed=embed)
 
-    if message.content == '!track':
-        content = message.content.split()
-        name = await name_formatting(content[1])
-        price = content[2]
-        if price.isdigit and await link_valid(name):
-            await add_game_track(name, price)
-            await message.channel.send(f"Game '{name}' has been added to the tracking list.")
-            
+    if '!track' in message.content.lower():
+        # !track Another Crab's Treasure PC 25
+        content = str(message.content).split()
+        name = " ".join(content[1:-1])
+        formatted_name = await name_formatting(name)
+        price = content[len(content)-1]
+        await add_game_track(formatted_name, price)
+        await message.channel.send(f"Game '{name}' has been added to the tracking list.")
 
 async def main():
     asyncio.create_task(web_yoink())

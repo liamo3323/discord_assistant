@@ -94,7 +94,7 @@ async def get_name_list():
     return game_info
 
 async def add_game_track(name, price):
-    game_info = get_name_list
+    game_info = await get_name_list()
     formatted_name = await name_formatting(name)
     
     for game in game_info:
@@ -107,4 +107,5 @@ async def add_game_track(name, price):
         json.dump(game_info, file, indent=4)
 
 if __name__ == "__main__":
+    # asyncio.run(add_game_track("Another Crab's Treasure PC Edition", 25))
     asyncio.run(yoink_games_info())

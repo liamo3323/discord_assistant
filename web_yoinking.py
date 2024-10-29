@@ -31,15 +31,10 @@ async def yoink_games_info():
             game_name = title_image["alt"]
 
             # Find official historical low
-            historical_low_col = soup.find("div", {"class": "relative game-info-price-col historical game-header-price-box lowest-recorded expired"})
-            official_historical_low = historical_low_col.find("span", {"class": "price-inner numeric"}).text
+            historical_low = soup.find_all("div", {"class": "relative game-info-price-col historical game-header-price-box lowest-recorded expired"}) 
 
-            # Find key historical low
-            historical_low_col = soup.find("div", {"class": "relative game-info-price-col game-header-price-box best-deal"})    
-            key_historical_low = historical_low_col.find("span", {"class": "price-inner numeric"}).text
-
-            official_historical_low = official_historical_low.replace('~', '').replace('\u00a3', '')
-            key_historical_low = key_historical_low.replace('~', '').replace('\u00a3', '')
+            official_historical_low = historical_low[0].find("span", {"class": "price-inner numeric"}).text.replace('~', '').replace('\u00a3', '')
+            key_historical_low = historical_low[1].find("span", {"class": "price-inner numeric"}).text.replace('~', '').replace('\u00a3', '')
 
             game_historical_low = min(float(official_historical_low), float(key_historical_low))
 

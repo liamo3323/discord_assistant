@@ -84,7 +84,7 @@ async def web_yoink():
         await asyncio.sleep(3)
 
         await check_below_price()
-        await asyncio.sleep(60)
+        await asyncio.sleep(60*60*23)
 
 @client.event
 async def on_ready():

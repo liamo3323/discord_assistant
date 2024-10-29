@@ -9,7 +9,7 @@ import datetime
 import pandas
 import json
 
-from web_yoinking import yoink_games_info
+from web_yoinking import yoink_games_info, add_game_track, name_formatting, link_valid
 from dotenv import load_dotenv
 
 
@@ -46,7 +46,6 @@ async def web_yoink():
         await loading_json()
         await asyncio.sleep(60)
 
-
 @client.event
 async def on_ready():
     print(f'Logged in as {client.user}')
@@ -61,7 +60,6 @@ async def on_message(message):
         return
 
     if message.content == '!updates':
-
         game_info = await loading_json()
         for game in game_info:
             print(game)
@@ -81,6 +79,14 @@ async def on_message(message):
             embed.set_footer(text="Game Price Tracking")
             await message.channel.send(embed=embed)
 
+    if message.content == '!track':
+        content = message.content.split()
+        name = await name_formatting(content[1])
+        price = content[2]
+        if price.isdigit and await link_valid(name):
+            await add_game_track(name, price)
+            await message.channel.send(f"Game '{name}' has been added to the tracking list.")
+            
 
 async def main():
     asyncio.create_task(web_yoink())

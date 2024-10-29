@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import json
 import requests
 import asyncio
+import re
 
 
 def getSoup(link):
@@ -69,26 +70,37 @@ async def get_games_info(game:str = "metaphor-refantazio"):
             "price_official_url": game_price_official_url,
             "price_key": game_price_key,
             "price_key_vendor": game_price_key_vendor,
-            "price_key_url": game_price_key_url
+            "price_key_url": game_price_key_url,
+            "url": link
          }
     ]
 
+    # try:
+    #     with open('tracking_game_prices.json', 'r') as json_file:
+    #         existing_games = json.load(json_file)  
+    # except FileNotFoundError:
+    #     existing_games = []
 
-    # Step 1: Open and read the existing data from the JSON file
-    try:
-        with open('tracking_game_prices.json', 'r') as json_file:
-            existing_games = json.load(json_file)  # Load the list of games
-    except FileNotFoundError:
-        # If the file doesn't exist, create an empty list
-        existing_games = []
+    # existing_games.append(game_tracking)
 
-    # Step 2: Append the new game to the list
-    existing_games.append(game_tracking)
+    # with open('tracking_game_prices.json', 'w') as json_file:
+    #     json.dump(existing_games, json_file, indent=4)
 
-    # Step 3: Write the updated list back to the JSON file
+
     with open('tracking_game_prices.json', 'w') as json_file:
-        json.dump(existing_games, json_file, indent=4)
+        json.dump(game_tracking, json_file, indent=4)
 
+async def name_formatting(name:str):
+     # remove mention of PC from game name
+     # remove special characters
+     # replace spaces with hiphens
+
+    name = re.sub(r'\bPC\b', '', name)  # remove mention of PC
+    name = re.sub(r'\bEdition\b', '', name)  # remove mention of PC
+    name = re.sub(r'[^a-zA-Z0-9\s-]', '', name)  # remove special characters
+    name = re.sub(r'\s+', '-', name)  # replace spaces with hyphens
+    name = name.strip('-')  # remove leading/trailing hyphens
+    return name.lower()  # return in lowercase
 
 if __name__ == "__main__":
     asyncio.run(get_games_info())

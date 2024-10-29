@@ -3,3 +3,4 @@
 game_info.yaml
 *.log
 __pycache__/
+tracking*

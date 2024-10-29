@@ -6,3 +6,4 @@ python_dotenv
 pyyaml
 requests
 virtualenv
+pandas

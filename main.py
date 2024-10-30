@@ -1,5 +1,5 @@
 # bot.py
-
+import requests
 import os
 import discord
 import logging
@@ -9,7 +9,7 @@ import datetime
 import pandas
 import json
 
-from web_yoinking import yoink_games_info, add_game_track, name_formatting, get_name_list
+from web_yoinking import yoink_games_info, add_game_track, name_formatting, get_name_list, getSoup, check_link_valid
 from dotenv import load_dotenv
 
 
@@ -21,11 +21,6 @@ handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w'
 intents = discord.Intents.default()
 intents.message_content = True 
 client = discord.Client(intents=intents)
-
-
-async def shutdown(ctx):
-    await ctx.send("Shutting down...")
-    await client.close()  # Gracefully close the bot
 
 
 async def loading_json():
@@ -74,21 +69,22 @@ async def check_below_price():
             await channel.send(embed= await send_embed(yoinked_info[x]))
 
 
-async def web_yoink():
+async def dailies():
     while True:
         print("Yoinking...")
         await yoink_games_info()
         await asyncio.sleep(2)
 
         await loading_json()
-        await asyncio.sleep(3)
+        await asyncio.sleep(2)
 
         await check_below_price()
-        await asyncio.sleep(60*60*23)
+        await asyncio.sleep(60*60*24)
 
 @client.event
 async def on_ready():
     print(f'Logged in as {client.user}')
+    # * start a timer till the set time to check for everything 
 
 
 @client.event
@@ -109,11 +105,31 @@ async def on_message(message):
         name = " ".join(content[1:-1])
         formatted_name = await name_formatting(name)
         price = content[len(content)-1]
-        await add_game_track(formatted_name, price)
-        await message.channel.send(f"Game '{name}' has been added to the tracking list.")
+
+        if await check_link_valid(getSoup("https://gg.deals/game/{}/".format(formatted_name))):
+            await add_game_track(formatted_name, price)
+            await message.channel.send(f"Game '{name}' has been added to the tracking list.")
+        else:
+            await message.channel.send(f"Game '{name}' could not be found.")
 
 async def main():
-    asyncio.create_task(web_yoink())
+    print("Yoinking...")
+    await yoink_games_info()
+    await asyncio.sleep(2)
+
+    await loading_json()
+    await asyncio.sleep(2)
+
+    await check_below_price()
+
+    now = datetime.datetime.now()
+    target_time = now.replace(hour=8, minute=0, second=0, microsecond=0)
+    if now > target_time:
+        target_time += datetime.timedelta(days=1)
+    delay = (target_time - now).total_seconds()
+    await asyncio.sleep(delay)
+
+    asyncio.create_task(dailies())
     await client.start(TOKEN)
 
 

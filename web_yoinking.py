@@ -23,7 +23,7 @@ async def yoink_games_info():
         soup = getSoup(link) # get info on the page
 
         # return if page not found
-        if await link_valid(soup):
+        if await check_link_valid(soup):
 
             # Find game id and name
             title_image = soup.find("div", {"class": "col-left"}).find("div",{"class": "game-info-image-wrapper"}).find("img")
@@ -68,7 +68,7 @@ async def yoink_games_info():
             json.dump(game_tracking, json_file, indent=4)
         
 
-async def link_valid(soup):
+async def check_link_valid(soup):
     try:
         ooops = soup.find("div", {"class": "col-left"}).find("div",{"class": "game-info-image-wrapper"}).find("img")
     except AttributeError:

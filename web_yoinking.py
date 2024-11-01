@@ -38,28 +38,40 @@ async def yoink_games_info():
 
             game_historical_low = min(float(official_historical_low), float(key_historical_low))
 
-            # Find game official price
-            hoverable_box = soup.find_all("div", {"class": "load-more-content shadow-box-big-light"})
-            game_price_official_vendor = hoverable_box[0].find("div", {"class": "relative hoverable-box d-flex flex-wrap flex-align-center game-item cta-full item game-deals-item game-list-item keep-unmarked-container"})['data-shop-name']
-            game_price_official_url = "https://gg.deals{}/".format(hoverable_box[0].find("a", {"class": "d-flex flex-align-center shop-link"})["href"])
-            game_price_official = hoverable_box[0].find("a", {"class": "price game-price with-tooltip"}).find("span", {"class": "price-inner"}).text
+            # Find game info
+            official_store = soup.find("div", {"id": "official-stores"})
+            official_store_tab = official_store.find("div", {"class": "relative price-info-with-label"})
+            official_price = official_store_tab.find("a", {"class": "price game-price with-tooltip"}).text
+
+            official_vendor_name = official_store.find("div", {"class": "relative hoverable-box d-flex flex-wrap flex-align-center game-item cta-full item game-deals-item game-list-item keep-unmarked-container"})['data-shop-name']
+
+            official_vendor_url = official_store.find("a", {"class": "action-desktop-btn d-flex flex-align-center flex-justify-center action-btn cta-label-desktop with-arrows action-ext"})['href']
+            official_vendor_url = "https://gg.deals"+official_vendor_url
+
 
             # Find game key price
-            game_price_key_vendor = hoverable_box[1].find("div", {"class": "relative hoverable-box d-flex flex-wrap flex-align-center game-item cta-full item game-deals-item game-list-item keep-unmarked-container"})['data-shop-name']
-            game_price_key_url = "https://gg.deals{}/".format(hoverable_box[1].find("a", {"class": "d-flex flex-align-center shop-link"})["href"])
-            game_price_key = hoverable_box[1].find("a", {"class": "price game-price with-tooltip"}).find("span", {"class": "price-inner"}).text
+            key_store = soup.find("div", {"id": "keyshops"})
+            key_store_tab = official_store.find("div", {"class": "relative price-info-with-label"})
+            key_price = official_store_tab.find("a", {"class": "price game-price with-tooltip"}).text
+
+            key_vendor_name = official_store.find("div", {"class": "relative hoverable-box d-flex flex-wrap flex-align-center game-item cta-full item game-deals-item game-list-item keep-unmarked-container"})['data-shop-name']
+
+            key_vendor_url = official_store.find("a", {"class": "action-desktop-btn d-flex flex-align-center flex-justify-center action-btn cta-label-desktop with-arrows action-ext"})['href']
+            key_vendor_url = "https://gg.deals"+key_vendor_url
 
             game_tracking.append(
                 {
                     "name": game_name,
                     "image_url": game_image_url,
                     "historical_low": game_historical_low,
-                    "price_official": game_price_official,
-                    "price_official_vendor": game_price_official_vendor,
-                    "price_official_url": game_price_official_url,
-                    "price_key": game_price_key,
-                    "price_key_vendor": game_price_key_vendor,
-                    "price_key_url": game_price_key_url,
+
+                    "price_official": official_price,
+                    "price_official_vendor": official_vendor_name,
+                    "price_official_url": official_vendor_url,
+
+                    "price_key": key_price,
+                    "price_key_vendor": key_vendor_name,
+                    "price_key_url": key_vendor_url,
                     "url": link
                 }
             )

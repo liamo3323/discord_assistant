@@ -71,15 +71,20 @@ async def check_below_price():
 
 async def dailies():
     while True:
-        print("Yoinking...")
+        print("Yoinking 'tracking_game_list' data...")
         await yoink_games_info()
         await asyncio.sleep(2)
 
-        await loading_json()
-        await asyncio.sleep(2)
-
+        print("Checking for any price drops...")
         await check_below_price()
-        await asyncio.sleep(60*60*24)
+
+        now = datetime.datetime.now()
+        target_time = now.replace(hour=8, minute=0, second=0, microsecond=0)
+        if now > target_time:
+            target_time += datetime.timedelta(days=1)
+        delay = (target_time - now).total_seconds()
+        await asyncio.sleep(delay)
+
 
 @client.event
 async def on_ready():
@@ -113,22 +118,6 @@ async def on_message(message):
             await message.channel.send(f"Game '{name}' could not be found.")
 
 async def main():
-    print("Yoinking...")
-    await yoink_games_info()
-    await asyncio.sleep(2)
-
-    await loading_json()
-    await asyncio.sleep(2)
-
-    await check_below_price()
-
-    now = datetime.datetime.now()
-    target_time = now.replace(hour=8, minute=0, second=0, microsecond=0)
-    if now > target_time:
-        target_time += datetime.timedelta(days=1)
-    delay = (target_time - now).total_seconds()
-    await asyncio.sleep(delay)
-
     asyncio.create_task(dailies())
     await client.start(TOKEN)
 

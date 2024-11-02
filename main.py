@@ -9,7 +9,7 @@ import datetime
 import pandas
 import json
 
-from web_yoinking import yoink_games_info, add_game_track, name_formatting, get_name_list, getSoup, check_link_valid
+from web_yoinking import yoink_games_info, add_game_track, name_formatting, get_json_file, getSoup, check_link_valid
 from dotenv import load_dotenv
 
 
@@ -52,7 +52,7 @@ async def send_embed(game):
 
 
 async def check_below_price():
-    tracking_info = await get_name_list()
+    tracking_info = await get_json_file("tracking_game_list.json")
 
     with open('tracking_game_prices.json', 'r') as file:
         yoinked_info = json.load(file)
@@ -77,12 +77,18 @@ async def dailies():
 
         print("Checking for any price drops...")
         await check_below_price()
-
+        
+        #-------------------------------------------------------------------
         now = datetime.datetime.now()
         target_time = now.replace(hour=8, minute=0, second=0, microsecond=0)
         if now > target_time:
             target_time += datetime.timedelta(days=1)
         delay = (target_time - now).total_seconds()
+
+        hours, remainder = divmod(delay, 3600)
+        minutes, _ = divmod(remainder, 60)
+        print(f"Sleeping for {int(hours)} hours and {int(minutes)} minutes.")
+        #-------------------------------------------------------------------
         await asyncio.sleep(delay)
 
 

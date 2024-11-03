@@ -20,14 +20,13 @@ async def yoink_game(link:str)->dict:
             game_image_url = title_image["src"]
             game_name = title_image["alt"]
 
-            # Find official historical low
-            historical_low = soup.find_all("div", {"class": "relative game-info-price-col historical game-header-price-box lowest-recorded expired"}) 
+            # Find historical low
+            historical_low_tab = soup.find("div", {"id": "game-price-history-ranking"})
+            historical_low_row = historical_low_tab.find("div", {"class": "game-content-box game-lowest-prices-content"}).find("div", {"class": "game-lowest-price-inner-row d-flex"})
+            historical_low = historical_low_row.find("span", {"class": "inline-price price"}).text
+            game_historical_low = historical_low.replace('~', '').replace('\u00a3', '')
 
-            #! Edge case if the game is at a historical low !
-            official_historical_low = historical_low[0].find("span", {"class": "price-inner numeric"}).text.replace('~', '').replace('\u00a3', '')
-            key_historical_low = historical_low[1].find("span", {"class": "price-inner numeric"}).text.replace('~', '').replace('\u00a3', '')
 
-            game_historical_low = min(float(official_historical_low), float(key_historical_low))
 
             # Find game info
             official_store = soup.find("div", {"id": "official-stores"})
@@ -126,16 +125,28 @@ async def add_game_track(name, price):
             return
     
     # edge case if game price is not int 
-    if not price.isdigit():
+    if price.type != int or price.type != float or price < 0:
         print(f"Price for '{name}' is not valid. Setting as historical low!")
         data = await yoink_game(f"https://gg.deals/game/{formatted_name}/")
-        return
+
     
     tracking_info.append({"name": formatted_name, "target_price": price})
     with open('tracking_game_list.json', 'w') as file:
         json.dump(tracking_info, file, indent=4)
 
+async def edit_game_track(name, price):
+    tracking_info = await get_json_file("tracking_game_list.json")
+    formatted_name = await name_formatting(name)
+
+    for game in tracking_info:
+        if game['name'] == formatted_name:
+            game['target_price'] = price
+            with open('tracking_game_list.json', 'w') as file:
+                json.dump(tracking_info, file, indent=4)
+            print(f"Game '{name}' has been updated to track at £{price}")
+            return
+    print(f"Game '{name}' is not being tracked.")
 
 if __name__ == "__main__":
-    # asyncio.run(add_game_track("Another Crab's Treasure PC Edition", 25))
-    asyncio.run(yoink_games_info())
+    # asyncio.run(edit_game_track("another crabs treasure PC", 20))
+    # asyncio.run(yoink_games_info())

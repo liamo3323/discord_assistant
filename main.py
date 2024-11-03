@@ -1,12 +1,8 @@
-# bot.py
-import requests
 import os
 import discord
 import logging
-import yaml
 import asyncio
 import datetime
-import pandas
 import json
 
 from web_yoinking import yoink_games_info, add_game_track, name_formatting, get_json_file, getSoup, check_link_valid
@@ -77,6 +73,7 @@ async def dailies():
 
         print("Checking for any price drops...")
         await check_below_price()
+        await asyncio.sleep(2)
         
         #-------------------------------------------------------------------
         now = datetime.datetime.now()
@@ -95,7 +92,6 @@ async def dailies():
 @client.event
 async def on_ready():
     print(f'Logged in as {client.user}')
-    # * start a timer till the set time to check for everything 
 
 
 @client.event
@@ -126,7 +122,6 @@ async def on_message(message):
 async def main():
     asyncio.create_task(dailies())
     await client.start(TOKEN)
-
 
 if __name__ == "__main__":
     asyncio.run(main())

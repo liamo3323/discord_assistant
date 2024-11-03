@@ -114,7 +114,7 @@ async def on_message(message):
         price = content[len(content)-1]
 
         if await check_link_valid(getSoup("https://gg.deals/game/{}/".format(formatted_name))):
-            await add_game_track(formatted_name, price)
+            await add_game_track(formatted_name, int(price))
             await message.channel.send(f"Game '{name}' has been added to the tracking list.")
         else:
             await message.channel.send(f"Game '{name}' could not be found.")
@@ -137,7 +137,7 @@ async def on_message(message):
         name = " ".join(content[1:-1])
         formatted_name = await name_formatting(name)
         price = content[len(content)-1]
-        edit_game_track(formatted_name, price)
+        await edit_game_track(formatted_name, int(price))
         await message.channel.send(f"Game '{name}' has been updated.")
 
 

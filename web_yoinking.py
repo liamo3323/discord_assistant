@@ -137,16 +137,14 @@ async def add_game_track(name, price):
 
 async def edit_game_track(name, price):
     tracking_info = await get_json_file("tracking_game_list.json")
-    formatted_name = await name_formatting(name)
-
     for game in tracking_info:
-        if game['name'] == formatted_name:
-            game['target_price'] = price
+        game_name = game['name']
+        if game_name == name:
+            game['target_price'] = int(price)
             with open('tracking_game_list.json', 'w') as file:
                 json.dump(tracking_info, file, indent=4)
             print(f"Game '{name}' has been updated to track at £{price}")
             return
-    print(f"Game '{name}' is not being tracked.")
 
 
 if __name__ == "__main__":

@@ -67,7 +67,7 @@ async def yoink_game(link:str)->dict:
             )
 
 async def yoink_games_info():
-    tracking_list = await get_json_file("tracking_game_list.json")
+    tracking_list = await get_json_file("web_yoinking/tracking_game_list.json")
     game_tracking = []
     for tracking in tracking_list:
         game = tracking['name']
@@ -78,7 +78,7 @@ async def yoink_games_info():
         if await check_link_valid(link):
             game_tracking.append(await yoink_game(link)) 
 
-        with open('tracking_game_prices.json', 'w') as json_file:
+        with open('web_yoinking/tracking_game_prices.json', 'w') as json_file:
             json.dump(game_tracking, json_file, indent=4)
         
 
@@ -115,7 +115,7 @@ async def get_json_file(path:str):
 
 
 async def add_game_track(name, price):
-    tracking_info = await get_json_file("tracking_game_list.json")
+    tracking_info = await get_json_file("web_yoinking/tracking_game_list.json")
     formatted_name = await name_formatting(name)
     data = await yoink_game(f"https://gg.deals/game/{formatted_name}/")
 
@@ -136,7 +136,7 @@ async def add_game_track(name, price):
 
 
 async def edit_game_track(name, price):
-    tracking_info = await get_json_file("tracking_game_list.json")
+    tracking_info = await get_json_file("web_yoinking/tracking_game_list.json")
     for game in tracking_info:
         game_name = game['name']
         if game_name == name:
@@ -145,7 +145,3 @@ async def edit_game_track(name, price):
                 json.dump(tracking_info, file, indent=4)
             print(f"Game '{name}' has been updated to track at £{price}")
             return
-
-
-if __name__ == "__main__":
-    asyncio.run(yoink_games_info())

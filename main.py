@@ -5,7 +5,7 @@ import asyncio
 import datetime
 import json
 
-from web_yoinking import yoink_games_info, add_game_track, name_formatting, get_json_file, getSoup, check_link_valid, edit_game_track
+from web_yoinking.web_yoinking import yoink_games_info, add_game_track, name_formatting, get_json_file, getSoup, check_link_valid, edit_game_track
 from dotenv import load_dotenv
 
 
@@ -18,15 +18,6 @@ intents = discord.Intents.default()
 intents.message_content = True 
 client = discord.Client(intents=intents)
 
-
-async def loading_json():
-    if os.path.exists('tracking_game_prices.json'):
-        with open('tracking_game_prices.json', 'r') as file:
-            game_info = json.load(file)
-        print("tracking_game_prices.json loaded successfully")
-        return game_info
-    else:
-        print("tracking_game_prices.json does not exist")
 
 
 async def send_embed(game):
@@ -48,9 +39,9 @@ async def send_embed(game):
 
 
 async def check_below_price():
-    tracking_info = await get_json_file("tracking_game_list.json")
+    tracking_info = await get_json_file("web_yoinking/tracking_game_list.json")
 
-    with open('tracking_game_prices.json', 'r') as file:
+    with open("web_yoinking/tracking_game_prices.json", 'r') as file:
         yoinked_info = json.load(file)
 
     for x in range (len(tracking_info)):
@@ -66,6 +57,7 @@ async def check_below_price():
 
 
 async def dailies():
+    # Command run before loop
     while True:
         print("Yoinking 'tracking_game_list' data...")
         await yoink_games_info()
@@ -102,9 +94,15 @@ async def on_message(message):
 
 
     if message.content == '!updates':
-        game_info = await loading_json()
-        for game in game_info:
-            await message.channel.send(embed=await send_embed(game))
+        if os.path.exists("web_yoinking/tracking_game_prices.json"):
+            with open("web_yoinking/tracking_game_prices.json", 'r') as file:
+                game_info = json.load(file)
+            print("tracking_game_prices.json loaded successfully")
+        else:
+            print("tracking_game_prices.json does not exist")
+
+            for game in game_info:
+                await message.channel.send(embed=await send_embed(game))
 
 
     if '!track_add' in message.content.lower():
@@ -120,7 +118,7 @@ async def on_message(message):
             await message.channel.send(f"Game '{name}' could not be found.")
         
     if '!track_view' in message.content.lower():
-        file = await get_json_file("tracking_game_list.json")
+        file = await get_json_file("web_yoinking/tracking_game_list.json")
         embed = discord.Embed(title="Currently Tracked Games Prices",
                     colour=0x00b0f4,
                     timestamp=datetime.datetime.now())
@@ -139,9 +137,6 @@ async def on_message(message):
         price = content[len(content)-1]
         await edit_game_track(formatted_name, int(price))
         await message.channel.send(f"Game '{name}' has been updated.")
-
-
-
 
 async def main():
     asyncio.create_task(dailies())

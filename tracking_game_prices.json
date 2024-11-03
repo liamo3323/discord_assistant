@@ -2,11 +2,11 @@
     {
         "name": "Metaphor: ReFantazio PC",
         "image_url": "https://img.gg.deals/91/ad/f10297f24da892d694f032ca8469141c9dfa_307xr176.jpg",
-        "historical_low": 31.97,
-        "price_official": "~\u00a348.73",
+        "historical_low": "31.97",
+        "price_official": "~\u00a348.75",
         "price_official_vendor": "Gamesplanet US",
         "price_official_url": "https://gg.deals/gb/redirect/ba8fd71d28b59b4e88545c50e95ce6f84519649e/?utm_source=games%2Fsingle",
-        "price_key": "~\u00a348.73",
+        "price_key": "~\u00a348.75",
         "price_key_vendor": "Gamesplanet US",
         "price_key_url": "https://gg.deals/gb/redirect/ba8fd71d28b59b4e88545c50e95ce6f84519649e/?utm_source=games%2Fsingle",
         "url": "https://gg.deals/game/metaphor-refantazio/"
@@ -14,7 +14,7 @@
     {
         "name": "ELDEN RING PC",
         "image_url": "https://img.gg.deals/31/ef/b655fb330dcd049aa385e36c1de20ed8d0df_307xr176.jpg",
-        "historical_low": 22.8,
+        "historical_low": "22.86",
         "price_official": "\u00a341.65",
         "price_official_vendor": "Indie Gala Store",
         "price_official_url": "https://gg.deals/gb/redirect/6d9ad80d2e07919e1f7e20109b4b884dcff3db7b/?utm_source=games%2Fsingle",
@@ -26,13 +26,13 @@
     {
         "name": "Another Crab's Treasure PC",
         "image_url": "https://img.gg.deals/92/d1/c5f7c8c21814a7ef99e576f1180dd1921eaa_307xr176.jpg",
-        "historical_low": 8.17,
-        "price_official": "\u00a321.59",
-        "price_official_vendor": "Steam",
-        "price_official_url": "https://gg.deals/gb/redirect/a10612871dc6f89e5b864f760edf2e2c34a01d2e/?utm_source=games%2Fsingle",
-        "price_key": "\u00a321.59",
-        "price_key_vendor": "Steam",
-        "price_key_url": "https://gg.deals/gb/redirect/a10612871dc6f89e5b864f760edf2e2c34a01d2e/?utm_source=games%2Fsingle",
+        "historical_low": "8.17",
+        "price_official": "\u00a322.40",
+        "price_official_vendor": "Fanatical",
+        "price_official_url": "https://gg.deals/gb/redirect/430b18b0f370a989307a0cfbbf6a0691394bffaf/?utm_source=games%2Fsingle",
+        "price_key": "\u00a322.40",
+        "price_key_vendor": "Fanatical",
+        "price_key_url": "https://gg.deals/gb/redirect/430b18b0f370a989307a0cfbbf6a0691394bffaf/?utm_source=games%2Fsingle",
         "url": "https://gg.deals/game/another-crabs-treasure/"
     }
 ]

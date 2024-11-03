@@ -5,7 +5,7 @@ import asyncio
 import datetime
 import json
 
-from web_yoinking import yoink_games_info, add_game_track, name_formatting, get_json_file, getSoup, check_link_valid
+from web_yoinking import yoink_games_info, add_game_track, name_formatting, get_json_file, getSoup, check_link_valid, edit_game_track
 from dotenv import load_dotenv
 
 
@@ -107,7 +107,7 @@ async def on_message(message):
             await message.channel.send(embed=await send_embed(game))
 
 
-    if '!track' in message.content.lower():
+    if '!track_add' in message.content.lower():
         content = str(message.content).split()
         name = " ".join(content[1:-1])
         formatted_name = await name_formatting(name)
@@ -118,6 +118,30 @@ async def on_message(message):
             await message.channel.send(f"Game '{name}' has been added to the tracking list.")
         else:
             await message.channel.send(f"Game '{name}' could not be found.")
+        
+    if '!track_view' in message.content.lower():
+        file = await get_json_file("tracking_game_list.json")
+        embed = discord.Embed(title="Currently Tracked Games Prices",
+                    colour=0x00b0f4,
+                    timestamp=datetime.datetime.now())
+        embed.set_author(name="Silver Wolf")
+        for game in file:
+            value = f"[{game['full_name']}]({game['url']}) - {game['target_price']}"
+            embed.add_field(name="",
+                            value=value,
+                            inline=False)
+        await message.channel.send(embed=embed)
+
+    if '!track_edit' in message.content.lower():
+        content = str(message.content).split()
+        name = " ".join(content[1:-1])
+        formatted_name = await name_formatting(name)
+        price = content[len(content)-1]
+        edit_game_track(formatted_name, price)
+        await message.channel.send(f"Game '{name}' has been updated.")
+
+
+
 
 async def main():
     asyncio.create_task(dailies())

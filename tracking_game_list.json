@@ -1,14 +1,20 @@
 [
     {
         "name": "metaphor-refantazio",
-        "target_price": "35"
+        "target_price": 35,
+        "full_name": "Metaphor: ReFantazio PC",
+        "url": "https://gg.deals/game/metaphor-refantazio/"
     },
     {
         "name": "elden-ring",
-        "target_price": "25"
+        "target_price": 25,
+        "full_name": "ELDEN RING PC",
+        "url": "https://gg.deals/game/elden-ring/"
     },
     {
         "name": "another-crabs-treasure",
-        "target_price": 20
+        "target_price": 20,
+        "full_name": "Another Crab's Treasure PC",
+        "url": "https://gg.deals/game/another-crabs-treasure/"
     }
 ]

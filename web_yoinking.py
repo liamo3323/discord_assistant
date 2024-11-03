@@ -116,8 +116,8 @@ async def get_json_file(path:str):
 
 async def add_game_track(name, price):
     tracking_info = await get_json_file("tracking_game_list.json")
-    yoinked_info = await get_json_file("tracking_game_prices.json")
     formatted_name = await name_formatting(name)
+    data = await yoink_game(f"https://gg.deals/game/{formatted_name}/")
 
     for game in tracking_info:
         if game['name'] == formatted_name:
@@ -125,14 +125,15 @@ async def add_game_track(name, price):
             return
     
     # edge case if game price is not int 
-    if price.type != int or price.type != float or price < 0:
+    if not isinstance(price, (int, float)) or price < 0:
         print(f"Price for '{name}' is not valid. Setting as historical low!")
-        data = await yoink_game(f"https://gg.deals/game/{formatted_name}/")
+        price = data['historical_low']
 
     
-    tracking_info.append({"name": formatted_name, "target_price": price})
+    tracking_info.append({"name": formatted_name, "target_price": price, "full_name": data['name'], "url": data['url']})
     with open('tracking_game_list.json', 'w') as file:
         json.dump(tracking_info, file, indent=4)
+
 
 async def edit_game_track(name, price):
     tracking_info = await get_json_file("tracking_game_list.json")
@@ -147,6 +148,6 @@ async def edit_game_track(name, price):
             return
     print(f"Game '{name}' is not being tracked.")
 
+
 if __name__ == "__main__":
-    # asyncio.run(edit_game_track("another crabs treasure PC", 20))
-    # asyncio.run(yoink_games_info())
+    asyncio.run(yoink_games_info())

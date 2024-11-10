@@ -59,8 +59,8 @@ async def check_below_price():
 
 
 async def check_new_chapter():
-    tracking_list = await get_json_file("tracking_chapter_list.json")
-    tracking_data = await get_json_file("tracking_manga_info.json")
+    tracking_list = await get_json_file("manga_updates/tracking_chapter_list.json")
+    tracking_data = await get_json_file("manga_updates/tracking_manga_info.json")
 
     for tracking in tracking_list:
         url = tracking['url']

@@ -4,8 +4,10 @@ import logging
 import asyncio
 import datetime
 import json
+import feedparser
 
 from web_yoinking.web_yoinking import yoink_games_info, add_game_track, name_formatting, get_json_file, getSoup, check_link_valid, edit_game_track
+from manga_updates.update_checker import init_update_feed, add_manga_track
 from dotenv import load_dotenv
 
 
@@ -56,8 +58,46 @@ async def check_below_price():
             await channel.send(embed= await send_embed(yoinked_info[x]))
 
 
+async def check_new_chapter():
+    tracking_list = await get_json_file("tracking_chapter_list.json")
+    tracking_data = await get_json_file("tracking_manga_info.json")
+
+    for tracking in tracking_list:
+        url = tracking['url']
+        feed = feedparser.parse(url)
+
+        name = feed['feed']['title'].replace(' - Releases on MangaUpdates', '')
+        latest_chapter = feed['entries'][0]['title']
+        entries = feed['entries']
+
+        for tracking_info in tracking_data:
+            if name == tracking_info['name']:
+                if latest_chapter != tracking_info['latest_chapter']:
+                    print(f"New chapter for {name}!")
+
+
+                    embed = discord.Embed(title=name,
+                    description=f"",
+                    colour=0x00b0f4,
+                    timestamp=datetime.datetime.now())
+                    embed.set_author(name="Silver Wolf")
+                    embed.add_field(name="New Chapter!",
+                                    value=f"New chapter for {name}! - {latest_chapter}",
+                                    inline=False)
+                    embed.set_footer(text="Manga Tracking")
+                    channel = await client.fetch_channel(845742634244898836)
+                    await channel.send(embed=embed)
+
+                    tracking_info['latest_chapter'] = latest_chapter
+                    tracking_info['entries'] = entries
+
+                    with open('tracking_manga_info.json', 'w') as json_file:
+                        json.dump(tracking_data, json_file, indent=4)
+                    break
+
 async def dailies():
     # Command run before loop
+    await init_update_feed()
     while True:
         print("Yoinking 'tracking_game_list' data...")
         await yoink_games_info()
@@ -67,6 +107,10 @@ async def dailies():
         await check_below_price()
         await asyncio.sleep(2)
         
+        print("Checking for any new chapters...")
+        await check_new_chapter()
+        await asyncio.sleep(2)
+
         #-------------------------------------------------------------------
         now = datetime.datetime.now()
         target_time = now.replace(hour=8, minute=0, second=0, microsecond=0)
@@ -137,6 +181,13 @@ async def on_message(message):
         price = content[len(content)-1]
         await edit_game_track(formatted_name, int(price))
         await message.channel.send(f"Game '{name}' has been updated.")
+
+    if '!manga_add' in message.content.lower():
+        content = str(message.content).split()
+        name = " ".join(content[1:-1])
+        url = content[len(content)-1]
+        await add_manga_track(name, url)
+        await message.channel.send(f"Manga '{name}' has been added to the tracking list.")
 
 async def main():
     asyncio.create_task(dailies())

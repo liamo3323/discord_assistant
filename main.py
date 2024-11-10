@@ -5,6 +5,7 @@ import asyncio
 import datetime
 import json
 import feedparser
+import subprocess
 
 from web_yoinking.web_yoinking import yoink_games_info, add_game_track, name_formatting, get_json_file, getSoup, check_link_valid, edit_game_track
 from manga_updates.update_checker import init_update_feed, add_manga_track
@@ -20,6 +21,19 @@ intents = discord.Intents.default()
 intents.message_content = True 
 client = discord.Client(intents=intents)
 
+async def git_push():
+    try:
+        # Add all changes
+        subprocess.run(["git", "add", "."], check=True)
+
+        # Commit the changes
+        subprocess.run(["git", "commit", "-m", "Automated commit from script"], check=True)
+
+        # Push to the remote repository
+        subprocess.run(["git", "push"], check=True)
+        print("Changes pushed successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error: {e}")
 
 
 async def send_embed(game):
@@ -95,6 +109,7 @@ async def check_new_chapter():
                         json.dump(tracking_data, json_file, indent=4)
                     break
 
+
 async def dailies():
     # Command run before loop
     await init_update_feed()
@@ -122,6 +137,7 @@ async def dailies():
         minutes, _ = divmod(remainder, 60)
         print(f"Sleeping for {int(hours)} hours and {int(minutes)} minutes.")
         #-------------------------------------------------------------------
+        await git_push()
         await asyncio.sleep(delay)
 
 

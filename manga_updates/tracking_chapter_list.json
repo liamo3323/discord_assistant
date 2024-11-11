@@ -6,5 +6,21 @@
     {
         "name": "Rebuild World",
         "url": "https://api.mangaupdates.com/v1/series/73393743472/rss"
+    },
+    {
+        "name": "The Lazy Lord Masters the Sword",
+        "url": "https://api.mangaupdates.com/v1/series/43476221806/rss"
+    },
+    {
+        "name": "Kaijuu 8",
+        "url": "https://api.mangaupdates.com/v1/series/19101650311/rss"
+    },
+    {
+        "name": "Chainsaw Man",
+        "url": "https://api.mangaupdates.com/v1/series/75336092483/rss"
+    },
+    {
+        "name": "Eleceed",
+        "url": "https://api.mangaupdates.com/v1/series/10076623491/rss"
     }
 ]

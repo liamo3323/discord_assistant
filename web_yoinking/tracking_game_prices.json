@@ -94,5 +94,29 @@
         "price_key_vendor": "Humble Store",
         "price_key_url": "https://gg.deals/gb/redirect/6b60f8ec466d23df2e24840bd7513f67da91a256/?utm_source=games%2Fsingle",
         "url": "https://gg.deals/game/dwarf-fortress/"
+    },
+    {
+        "name": "Class of '09: The Re-Up PC",
+        "image_url": "https://img.gg.deals/c4/82/56aa1d0cf920053b05524c0d624b78188719_307xr176.jpg",
+        "historical_low": "8.95",
+        "price_official": "\u00a312.79",
+        "price_official_vendor": "Steam",
+        "price_official_url": "https://gg.deals/gb/redirect/45bfe0787dd603e7edcfeba6b3885dda80185793/?utm_source=games%2Fsingle",
+        "price_key": "\u00a312.79",
+        "price_key_vendor": "Steam",
+        "price_key_url": "https://gg.deals/gb/redirect/45bfe0787dd603e7edcfeba6b3885dda80185793/?utm_source=games%2Fsingle",
+        "url": "https://gg.deals/game/class-of-09-the-re-up/"
+    },
+    {
+        "name": "Class of '09 PC",
+        "image_url": "https://img.gg.deals/40/8f/13ae0b71f5b36d7798663f356f506a3726e4_307xr176.jpg",
+        "historical_low": "1.49",
+        "price_official": "\u00a32.19",
+        "price_official_vendor": "Gog.com",
+        "price_official_url": "https://gg.deals/gb/redirect/b9a764d395a606caac111181b9bf8853ca9c0c3a/?utm_source=games%2Fsingle",
+        "price_key": "\u00a32.19",
+        "price_key_vendor": "Gog.com",
+        "price_key_url": "https://gg.deals/gb/redirect/b9a764d395a606caac111181b9bf8853ca9c0c3a/?utm_source=games%2Fsingle",
+        "url": "https://gg.deals/game/class-of-09/"
     }
 ]

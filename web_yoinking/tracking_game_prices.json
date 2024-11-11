@@ -34,5 +34,65 @@
         "price_key_vendor": "Fanatical",
         "price_key_url": "https://gg.deals/gb/redirect/430b18b0f370a989307a0cfbbf6a0691394bffaf/?utm_source=games%2Fsingle",
         "url": "https://gg.deals/game/another-crabs-treasure/"
+    },
+    {
+        "name": "Teardown PC",
+        "image_url": "https://img.gg.deals/e5/e1/c9ef0e2c12ac013e35fcc4f1903be8a40603_307xr176.jpg",
+        "historical_low": "9.30",
+        "price_official": "\u00a310.76",
+        "price_official_vendor": "Gamesplanet US",
+        "price_official_url": "https://gg.deals/gb/redirect/43b48f4793826976848d307e071eac0e8fd1fbb3/?utm_source=games%2Fsingle",
+        "price_key": "\u00a310.76",
+        "price_key_vendor": "Gamesplanet US",
+        "price_key_url": "https://gg.deals/gb/redirect/43b48f4793826976848d307e071eac0e8fd1fbb3/?utm_source=games%2Fsingle",
+        "url": "https://gg.deals/game/teardown/"
+    },
+    {
+        "name": "Ys VIII: Lacrimosa of DANA PC",
+        "image_url": "https://img.gg.deals/e1/45/e709eba350f0cf4fdfecd3f2a761d9fef87e_307xr176.jpg",
+        "historical_low": "8.82",
+        "price_official": "\u00a329.74",
+        "price_official_vendor": "WinGameStore",
+        "price_official_url": "https://gg.deals/gb/redirect/f979d541797cbf3b6f4edf493c708850ef8a8867/?utm_source=games%2Fsingle",
+        "price_key": "\u00a329.74",
+        "price_key_vendor": "WinGameStore",
+        "price_key_url": "https://gg.deals/gb/redirect/f979d541797cbf3b6f4edf493c708850ef8a8867/?utm_source=games%2Fsingle",
+        "url": "https://gg.deals/game/ys-viii-lacrimosa-of-dana-viii-lacrimosa-of-dana/"
+    },
+    {
+        "name": "Xenonauts 2 PC",
+        "image_url": "https://img.gg.deals/82/a0/fd0cc6dd71f3cc769eb1842b06501e9b575e_307xr176.jpg",
+        "historical_low": "13.23",
+        "price_official": "\u00a321.15",
+        "price_official_vendor": "Humble Store",
+        "price_official_url": "https://gg.deals/gb/redirect/2c328c0c5775bd4ce30c38c85f16e6cb2a1e63b8/?utm_source=games%2Fsingle",
+        "price_key": "\u00a321.15",
+        "price_key_vendor": "Humble Store",
+        "price_key_url": "https://gg.deals/gb/redirect/2c328c0c5775bd4ce30c38c85f16e6cb2a1e63b8/?utm_source=games%2Fsingle",
+        "url": "https://gg.deals/game/xenonauts-2/"
+    },
+    {
+        "name": "FINAL FANTASY XVI PC",
+        "image_url": "https://img.gg.deals/5c/93/17f2830e117ee994f156e4c3c1d9eb7e05e7_307xr176.jpg",
+        "historical_low": "30.50",
+        "price_official": "\u00a344.99",
+        "price_official_vendor": "Green Man Gaming",
+        "price_official_url": "https://gg.deals/gb/redirect/32d90c9a54c94e3c13221721c93d5efa6270e15c/?utm_source=games%2Fsingle",
+        "price_key": "\u00a344.99",
+        "price_key_vendor": "Green Man Gaming",
+        "price_key_url": "https://gg.deals/gb/redirect/32d90c9a54c94e3c13221721c93d5efa6270e15c/?utm_source=games%2Fsingle",
+        "url": "https://gg.deals/game/final-fantasy-xvi/"
+    },
+    {
+        "name": "Dwarf Fortress PC",
+        "image_url": "https://img.gg.deals/7d/7e/276da2e67fc6423bdf5cc3722294f161511d_307xr176.jpg",
+        "historical_low": "19.99",
+        "price_official": "\u00a324.99",
+        "price_official_vendor": "Humble Store",
+        "price_official_url": "https://gg.deals/gb/redirect/6b60f8ec466d23df2e24840bd7513f67da91a256/?utm_source=games%2Fsingle",
+        "price_key": "\u00a324.99",
+        "price_key_vendor": "Humble Store",
+        "price_key_url": "https://gg.deals/gb/redirect/6b60f8ec466d23df2e24840bd7513f67da91a256/?utm_source=games%2Fsingle",
+        "url": "https://gg.deals/game/dwarf-fortress/"
     }
 ]

@@ -131,7 +131,7 @@ async def add_game_track(name, price):
 
     
     tracking_info.append({"name": formatted_name, "target_price": price, "full_name": data['name'], "url": data['url']})
-    with open('tracking_game_list.json', 'w') as file:
+    with open('web_yoinking/tracking_game_list.json', 'w') as file:
         json.dump(tracking_info, file, indent=4)
 
 
@@ -141,7 +141,10 @@ async def edit_game_track(name, price):
         game_name = game['name']
         if game_name == name:
             game['target_price'] = int(price)
-            with open('tracking_game_list.json', 'w') as file:
+            with open('web_yoinking/tracking_game_list.json', 'w') as file:
                 json.dump(tracking_info, file, indent=4)
             print(f"Game '{name}' has been updated to track at £{price}")
             return
+        
+if __name__ == "__main__":
+    asyncio.run(add_game_track('monster-hunter-wilds', 40))

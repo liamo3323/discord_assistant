@@ -104,8 +104,8 @@ async def check_new_chapter():
 
                     tracking_info['latest_chapter'] = latest_chapter
                     tracking_info['entries'] = entries
-
-                    with open('tracking_manga_info.json', 'w') as json_file:
+ 
+                    with open('manga_updates/tracking_manga_info.json', 'w') as json_file:
                         json.dump(tracking_data, json_file, indent=4)
                     break
 
@@ -137,7 +137,6 @@ async def dailies():
         minutes, _ = divmod(remainder, 60)
         print(f"Sleeping for {int(hours)} hours and {int(minutes)} minutes.")
         #-------------------------------------------------------------------
-        await git_push()
         await asyncio.sleep(delay)
 
 
@@ -171,7 +170,7 @@ async def on_message(message):
         formatted_name = await name_formatting(name)
         price = content[len(content)-1]
 
-        if await check_link_valid(getSoup("https://gg.deals/game/{}/".format(formatted_name))):
+        if await check_link_valid("https://gg.deals/game/{}/".format(formatted_name)):
             await add_game_track(formatted_name, int(price))
             await message.channel.send(f"Game '{name}' has been added to the tracking list.")
         else:
@@ -184,7 +183,7 @@ async def on_message(message):
                     timestamp=datetime.datetime.now())
         embed.set_author(name="Silver Wolf")
         for game in file:
-            value = f"[{game['full_name']}]({game['url']}) - {game['target_price']}"
+            value = f"[{game['full_name']}]({game['url']}) - £{game['target_price']}"
             embed.add_field(name="",
                             value=value,
                             inline=False)

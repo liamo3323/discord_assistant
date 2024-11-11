@@ -16,5 +16,47 @@
         "target_price": 20,
         "full_name": "Another Crab's Treasure PC",
         "url": "https://gg.deals/game/another-crabs-treasure/"
+    },
+    {
+        "name": "teardown",
+        "target_price": 10,
+        "full_name": "Teardown PC",
+        "url": "https://gg.deals/game/teardown/"
+    },
+    {
+        "name": "ys-viii-lacrimosa-of-dana-viii-lacrimosa-of-dana",
+        "target_price": 9,
+        "full_name": "Ys VIII: Lacrimosa of DANA PC",
+        "url": "https://gg.deals/game/ys-viii-lacrimosa-of-dana-viii-lacrimosa-of-dana/"
+    },
+    {
+        "name": "xenonauts-2",
+        "target_price": 13,
+        "full_name": "Xenonauts 2 PC",
+        "url": "https://gg.deals/game/xenonauts-2/"
+    },
+    {
+        "name": "final-fantasy-xvi",
+        "target_price": 31,
+        "full_name": "FINAL FANTASY XVI PC",
+        "url": "https://gg.deals/game/final-fantasy-xvi/"
+    },
+    {
+        "name": "dwarf-fortress",
+        "target_price": 20,
+        "full_name": "Dwarf Fortress PC",
+        "url": "https://gg.deals/game/dwarf-fortress/"
+    },
+    {
+        "name": "class-of-09-the-re-up",
+        "target_price": 10,
+        "full_name": "Class of '09: The Re-Up PC",
+        "url": "https://gg.deals/game/class-of-09-the-re-up/"
+    },
+    {
+        "name": "class-of-09",
+        "target_price": 2,
+        "full_name": "Class of '09 PC",
+        "url": "https://gg.deals/game/class-of-09/"
     }
 ]

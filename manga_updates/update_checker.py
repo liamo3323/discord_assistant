@@ -3,19 +3,12 @@ import asyncio
 import json 
 import os
 
-# Define the RSS feed URL
-FEED_URL = "https://api.mangaupdates.com/v1/series/24893347544/rss"
-
-# Store seen entries to avoid duplicate notifications
-seen_entries = set()
-
 async def get_json_file(path:str):
     with open(path, 'r') as file:
         game_info = json.load(file)
     return game_info
 
 async def init_update_feed():
-    # tracking_list = await get_json_file("tracking_chapter_list.json")
     tracking_list = await get_json_file("manga_updates/tracking_chapter_list.json")
     tracking_info_list = []
     # * Tracking list should have at least: 
@@ -41,17 +34,15 @@ async def init_update_feed():
 
         )
 
-        if not os.path.exists('tracking_manga_info.json'):
-            with open('tracking_manga_info.json', 'w') as json_file:
+        if not os.path.exists('manga_updates/tracking_manga_info.json'):
+            with open('manga_updates/tracking_manga_info.json', 'w') as json_file:
                 json.dump(tracking_info_list, json_file)
         else:
-            # with open('tracking_manga_info.json', 'w') as json_file:
             with open('manga_updates/tracking_manga_info.json', 'w') as json_file:
                 json.dump(tracking_info_list, json_file, indent=4)
 
 async def add_manga_track(name, url):
     tracking_list = await get_json_file("manga_updates/tracking_chapter_list.json")
-    # tracking_list = await get_json_file("tracking_chapter_list.json")
     tracking_list.append(
         {
             "name": name,

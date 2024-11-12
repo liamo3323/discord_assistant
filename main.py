@@ -177,17 +177,21 @@ async def on_message(message):
             await message.channel.send(f"Game '{name}' could not be found.")
         
     if '!track_view' in message.content.lower():
-        file = await get_json_file("web_yoinking/tracking_game_list.json")
+        tracking_list_file = await get_json_file("web_yoinking/tracking_game_list.json")
+        tracking_data_file = await get_json_file("web_yoinking/tracking_game_prices.json")
         embed = discord.Embed(title="Currently Tracked Games Prices",
                     colour=0x00b0f4,
                     timestamp=datetime.datetime.now())
         embed.set_author(name="Silver Wolf")
-        for game in file:
-            value = f"[{game['full_name']}]({game['url']}) - £{game['target_price']}"
-            embed.add_field(name="",
-                            value=value,
-                            inline=False)
-        await message.channel.send(embed=embed)
+        if len(tracking_list_file) == len(tracking_data_file):
+            for x in range(len(tracking_list_file)):
+                key_price = tracking_data_file[x]['price_key']
+                vendor = tracking_data_file[x]['price_key_vendor']
+                value = f"[{tracking_data_file[x]['name']}]({tracking_data_file[x]['url']})\nCurrent Price - {key_price}\nVendor - {vendor}\n\nTracking Price - {tracking_list_file[x]['target_price']}\nHistorical low - £{tracking_data_file[x]['historical_low']}"
+                embed.add_field(name="",
+                                value=value,
+                                inline=False)
+            await message.channel.send(embed=embed)
 
     if '!track_edit' in message.content.lower():
         content = str(message.content).split()

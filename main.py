@@ -42,7 +42,6 @@ async def send_embed(game):
                                 description=f"Historical Low - £{game['historical_low']}",
                                 colour=0x00b0f4,
                                 timestamp=datetime.datetime.now())
-            embed.set_author(name="Silver Wolf")
             embed.add_field(name=game['price_official_vendor'],
                             value=f"Official Keys - {game['price_official']}",
                             inline=False)
@@ -94,7 +93,6 @@ async def check_new_chapter():
                     description=f"",
                     colour=0x00b0f4,
                     timestamp=datetime.datetime.now())
-                    embed.set_author(name="Silver Wolf")
                     embed.add_field(name="New Chapter!",
                                     value=f"New chapter for {name}! - {latest_chapter}",
                                     inline=False)
@@ -126,18 +124,18 @@ async def dailies():
         await check_new_chapter()
         await asyncio.sleep(2)
 
-        #-------------------------------------------------------------------
-        now = datetime.datetime.now()
-        target_time = now.replace(hour=8, minute=0, second=0, microsecond=0)
-        if now > target_time:
-            target_time += datetime.timedelta(days=1)
-        delay = (target_time - now).total_seconds()
+        # #-------------------------------------------------------------------
+        # now = datetime.datetime.now()
+        # target_time = now.replace(hour=8, minute=0, second=0, microsecond=0)
+        # if now > target_time:
+        #     target_time += datetime.timedelta(days=1)
+        # delay = (target_time - now).total_seconds()
 
-        hours, remainder = divmod(delay, 3600)
-        minutes, _ = divmod(remainder, 60)
-        print(f"Sleeping for {int(hours)} hours and {int(minutes)} minutes.")
-        #-------------------------------------------------------------------
-        await asyncio.sleep(delay)
+        # hours, remainder = divmod(delay, 3600)
+        # minutes, _ = divmod(remainder, 60)
+        # print(f"Sleeping for {int(hours)} hours and {int(minutes)} minutes.")
+        # #-------------------------------------------------------------------
+        await asyncio.sleep(3600)
 
 
 @client.event
@@ -150,19 +148,6 @@ async def on_message(message):
     print(message.content)
     if message.author == client.user:
         return
-
-
-    if message.content == '!updates':
-        if os.path.exists("web_yoinking/tracking_game_prices.json"):
-            with open("web_yoinking/tracking_game_prices.json", 'r') as file:
-                game_info = json.load(file)
-            print("tracking_game_prices.json loaded successfully")
-        else:
-            print("tracking_game_prices.json does not exist")
-
-            for game in game_info:
-                await message.channel.send(embed=await send_embed(game))
-
 
     if '!track_add' in message.content.lower():
         content = str(message.content).split()
@@ -182,12 +167,11 @@ async def on_message(message):
         embed = discord.Embed(title="Currently Tracked Games Prices",
                     colour=0x00b0f4,
                     timestamp=datetime.datetime.now())
-        embed.set_author(name="Silver Wolf")
         if len(tracking_list_file) == len(tracking_data_file):
             for x in range(len(tracking_list_file)):
                 key_price = tracking_data_file[x]['price_key']
                 vendor = tracking_data_file[x]['price_key_vendor']
-                value = f"[{tracking_data_file[x]['name']}]({tracking_data_file[x]['url']})\nCurrent Price - {key_price}\nVendor - {vendor}\n\nTracking Price - {tracking_list_file[x]['target_price']}\nHistorical low - £{tracking_data_file[x]['historical_low']}"
+                value = f"[{tracking_data_file[x]['name']}]({tracking_data_file[x]['url']})\nCurrent Price - {key_price}\nVendor - {vendor}\n\nTracking Price - {tracking_list_file[x]['target_price']}\nHistorical low - £{tracking_data_file[x]['historical_low']}\n-----------------------\n"
                 embed.add_field(name="",
                                 value=value,
                                 inline=False)
@@ -207,6 +191,17 @@ async def on_message(message):
         url = content[len(content)-1]
         await add_manga_track(name, url)
         await message.channel.send(f"Manga '{name}' has been added to the tracking list.")
+
+    if '!manga_view' in message.content.lower():
+        tracking_data = await get_json_file("manga_updates/tracking_manga_info.json")
+        embed = discord.Embed(title="Currently Tracked Manga",
+                    colour=0x00b0f4,
+                    timestamp=datetime.datetime.now())
+        for manga in tracking_data:
+            embed.add_field(name="",
+                            value=f"Latest Chapter - {manga['latest_chapter']}",
+                            inline=False)
+        await message.channel.send(embed=embed)
 
 async def main():
     asyncio.create_task(dailies())

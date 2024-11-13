@@ -21,37 +21,38 @@ intents = discord.Intents.default()
 intents.message_content = True 
 client = discord.Client(intents=intents)
 
-async def git_push():
-    try:
-        # Add all changes
-        subprocess.run(["git", "add", "."], check=True)
+#---------- DISCORD BOT FUNCTIONS -------------
 
-        # Commit the changes
-        subprocess.run(["git", "commit", "-m", "Automated commit from script"], check=True)
+async def dailies():
+    # Command run before loop
+    await init_update_feed()
+    while True:
+        print("Yoinking 'tracking_game_list' data...")
+        await yoink_games_info()
+        await asyncio.sleep(2)
 
-        # Push to the remote repository
-        subprocess.run(["git", "push"], check=True)
-        print("Changes pushed successfully.")
-    except subprocess.CalledProcessError as e:
-        print(f"Error: {e}")
+        print("Checking for any price drops...")
+        await check_below_price()
+        await asyncio.sleep(2)
+        
+        print("Checking for any new chapters...")
+        await check_new_chapter()
+        await asyncio.sleep(2)
 
+        # #-------------------------------------------------------------------
+        # now = datetime.datetime.now()
+        # target_time = now.replace(hour=8, minute=0, second=0, microsecond=0)
+        # if now > target_time:
+        #     target_time += datetime.timedelta(days=1)
+        # delay = (target_time - now).total_seconds()
 
-async def send_embed(game):
-            embed = discord.Embed(title=game['name'],
-                                url=game['url'],
-                                description=f"Historical Low - £{game['historical_low']}",
-                                colour=0x00b0f4,
-                                timestamp=datetime.datetime.now())
-            embed.add_field(name=game['price_official_vendor'],
-                            value=f"Official Keys - {game['price_official']}",
-                            inline=False)
-            embed.add_field(name=game['price_key_vendor'],
-                            value=f"Key Price - {game['price_key']}",
-                            inline=False)
-            embed.set_image(url=game['image_url'])
-            embed.set_footer(text="Game Price Tracking")
-            return embed
+        # hours, remainder = divmod(delay, 3600)
+        # minutes, _ = divmod(remainder, 60)
+        # print(f"Sleeping for {int(hours)} hours and {int(minutes)} minutes.")
+        # #-------------------------------------------------------------------
+        await asyncio.sleep(3600)
 
+#---------- GAME PRICE FUNCTIONS --------------
 
 async def check_below_price():
     tracking_info = await get_json_file("web_yoinking/tracking_game_list.json")
@@ -70,6 +71,45 @@ async def check_below_price():
             channel = await client.fetch_channel(845742634244898836)
             await channel.send(embed= await send_embed(yoinked_info[x]))
 
+async def is_good_price(original_price, discounted_price, historical_low):
+    # Calculate the discount percentage
+    discount_percentage = await discount_price(original_price, discounted_price)
+
+    # Define thresholds
+    significant_discount_threshold = 50  # e.g., 50% discount
+    close_to_historical_low_threshold = 0.2  # within 20% of historical low
+
+    # Check if the discounted price is significantly lower than the original price
+    is_significant_discount = discount_percentage >= significant_discount_threshold
+
+    # Check if the discounted price is close to or lower than the historical low
+    is_close_to_historical_low = discounted_price <= historical_low * (1 + close_to_historical_low_threshold)
+
+    # Determine if the price is really good
+    if is_significant_discount or is_close_to_historical_low:
+        return True
+    return False
+
+async def discount_price(original_price, discounted_price):
+    return (((original_price - discounted_price) / original_price) * 100)
+
+async def send_embed(game):
+            embed = discord.Embed(title=game['name'],
+                                url=game['url'],
+                                description=f"Historical Low - £{game['historical_low']}",
+                                colour=0x00b0f4,
+                                timestamp=datetime.datetime.now())
+            embed.add_field(name=game['price_official_vendor'],
+                            value=f"Official Keys - {game['price_official']}",
+                            inline=False)
+            embed.add_field(name=game['price_key_vendor'],
+                            value=f"Key Price - {game['price_key']}",
+                            inline=False)
+            embed.set_image(url=game['image_url'])
+            embed.set_footer(text="Game Price Tracking")
+            return embed
+
+#---------- MANGA TRACKING FUNCTIONS ----------
 
 async def check_new_chapter():
     tracking_list = await get_json_file("manga_updates/tracking_chapter_list.json")
@@ -107,35 +147,8 @@ async def check_new_chapter():
                         json.dump(tracking_data, json_file, indent=4)
                     break
 
+#----------------------------------------------
 
-async def dailies():
-    # Command run before loop
-    await init_update_feed()
-    while True:
-        print("Yoinking 'tracking_game_list' data...")
-        await yoink_games_info()
-        await asyncio.sleep(2)
-
-        print("Checking for any price drops...")
-        await check_below_price()
-        await asyncio.sleep(2)
-        
-        print("Checking for any new chapters...")
-        await check_new_chapter()
-        await asyncio.sleep(2)
-
-        # #-------------------------------------------------------------------
-        # now = datetime.datetime.now()
-        # target_time = now.replace(hour=8, minute=0, second=0, microsecond=0)
-        # if now > target_time:
-        #     target_time += datetime.timedelta(days=1)
-        # delay = (target_time - now).total_seconds()
-
-        # hours, remainder = divmod(delay, 3600)
-        # minutes, _ = divmod(remainder, 60)
-        # print(f"Sleeping for {int(hours)} hours and {int(minutes)} minutes.")
-        # #-------------------------------------------------------------------
-        await asyncio.sleep(3600)
 
 
 @client.event
@@ -164,17 +177,36 @@ async def on_message(message):
     if '!track_view' in message.content.lower():
         tracking_list_file = await get_json_file("web_yoinking/tracking_game_list.json")
         tracking_data_file = await get_json_file("web_yoinking/tracking_game_prices.json")
-        embed = discord.Embed(title="Currently Tracked Games Prices",
-                    colour=0x00b0f4,
-                    timestamp=datetime.datetime.now())
+        embed = discord.Embed(title="Currently Tracked Games Prices", colour=0x00b0f4, timestamp=datetime.datetime.now(), description="")
+        
         if len(tracking_list_file) == len(tracking_data_file):
+
+
+            good_deal_list = []
+            value_list = []
             for x in range(len(tracking_list_file)):
-                key_price = tracking_data_file[x]['price_key']
+                discounted_price = tracking_data_file[x]['price_key']
                 vendor = tracking_data_file[x]['price_key_vendor']
-                value = f"[{tracking_data_file[x]['name']}]({tracking_data_file[x]['url']})\nCurrent Price - {key_price}\nVendor - {vendor}\n\nTracking Price - {tracking_list_file[x]['target_price']}\nHistorical low - £{tracking_data_file[x]['historical_low']}\n-----------------------\n"
-                embed.add_field(name="",
-                                value=value,
-                                inline=False)
+                original_price = tracking_data_file[x]['price_official']
+                historical_low = tracking_data_file[x]['historical_low']
+
+                if await is_good_price(float(original_price.replace("~", "").replace("\u00a3", "")), float(discounted_price.replace("~", "").replace("\u00a3", "")), float(historical_low)):
+                    good_deal_list.append(f"**[{tracking_data_file[x]['name']}]({tracking_data_file[x]['url']})**\nCurrent Price - {discounted_price}\nVendor - {vendor}\n\nTracking Price - £{tracking_list_file[x]['target_price']}\nHistorical low - £{tracking_data_file[x]['historical_low']}\n-----------------------\n")
+                
+                else:
+                    value_list.append(f"**[{tracking_data_file[x]['name']}]({tracking_data_file[x]['url']})**\nCurrent Price - {discounted_price}\nVendor - {vendor}\n\nTracking Price - £{tracking_list_file[x]['target_price']}\nHistorical low - £{tracking_data_file[x]['historical_low']}\n-----------------------\n")
+                    
+
+            if len(good_deal_list) != 0:
+                embed.add_field(name="", value="🔥 Best Deals! 🔥", inline=False)
+                for x in good_deal_list:
+                    embed.add_field(name="", value=x, inline=False)
+                
+            embed.add_field(name="", value="Normal Deals",inline=False)
+            
+            for x in value_list:
+                embed.add_field(name="", value=x, inline=False)
+                
             await message.channel.send(embed=embed)
 
     if '!track_edit' in message.content.lower():

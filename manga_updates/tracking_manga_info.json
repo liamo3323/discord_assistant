@@ -1,8 +1,24 @@
 [
     {
         "name": "Mato Seihei no Slave",
-        "latest_chapter": "Mato Seihei no Slave c.143",
+        "latest_chapter": "Mato Seihei no Slave c.144",
         "entries": [
+            {
+                "title": "Mato Seihei no Slave c.144",
+                "title_detail": {
+                    "type": "text/plain",
+                    "language": null,
+                    "base": "https://api.mangaupdates.com/v1/series/24893347544/rss",
+                    "value": "Mato Seihei no Slave c.144"
+                },
+                "summary": "Ards",
+                "summary_detail": {
+                    "type": "text/html",
+                    "language": null,
+                    "base": "https://api.mangaupdates.com/v1/series/24893347544/rss",
+                    "value": "Ards"
+                }
+            },
             {
                 "title": "Mato Seihei no Slave c.143",
                 "title_detail": {
@@ -378,22 +394,6 @@
                     "language": null,
                     "base": "https://api.mangaupdates.com/v1/series/24893347544/rss",
                     "value": "Mato Seihei no Slave v.15 c.122"
-                },
-                "summary": "Ards",
-                "summary_detail": {
-                    "type": "text/html",
-                    "language": null,
-                    "base": "https://api.mangaupdates.com/v1/series/24893347544/rss",
-                    "value": "Ards"
-                }
-            },
-            {
-                "title": "Mato Seihei no Slave v.15 c.121",
-                "title_detail": {
-                    "type": "text/plain",
-                    "language": null,
-                    "base": "https://api.mangaupdates.com/v1/series/24893347544/rss",
-                    "value": "Mato Seihei no Slave v.15 c.121"
                 },
                 "summary": "Ards",
                 "summary_detail": {
@@ -813,8 +813,24 @@
     },
     {
         "name": "The Lazy Lord Masters the Sword",
-        "latest_chapter": "The Lazy Lord Masters the Sword c.125",
+        "latest_chapter": "The Lazy Lord Masters the Sword c.116",
         "entries": [
+            {
+                "title": "The Lazy Lord Masters the Sword c.116",
+                "title_detail": {
+                    "type": "text/plain",
+                    "language": null,
+                    "base": "https://api.mangaupdates.com/v1/series/43476221806/rss",
+                    "value": "The Lazy Lord Masters the Sword c.116"
+                },
+                "summary": "LINE Webtoon",
+                "summary_detail": {
+                    "type": "text/html",
+                    "language": null,
+                    "base": "https://api.mangaupdates.com/v1/series/43476221806/rss",
+                    "value": "LINE Webtoon"
+                }
+            },
             {
                 "title": "The Lazy Lord Masters the Sword c.125",
                 "title_detail": {
@@ -1197,22 +1213,6 @@
                     "language": null,
                     "base": "https://api.mangaupdates.com/v1/series/43476221806/rss",
                     "value": "Asura"
-                }
-            },
-            {
-                "title": "The Lazy Lord Masters the Sword c.110",
-                "title_detail": {
-                    "type": "text/plain",
-                    "language": null,
-                    "base": "https://api.mangaupdates.com/v1/series/43476221806/rss",
-                    "value": "The Lazy Lord Masters the Sword c.110"
-                },
-                "summary": "Eros Scans",
-                "summary_detail": {
-                    "type": "text/html",
-                    "language": null,
-                    "base": "https://api.mangaupdates.com/v1/series/43476221806/rss",
-                    "value": "Eros Scans"
                 }
             }
         ]
@@ -2041,6 +2041,22 @@
                     "base": "https://api.mangaupdates.com/v1/series/10076623491/rss",
                     "value": "Eleceed c.324"
                 },
+                "summary": "MMSCANS",
+                "summary_detail": {
+                    "type": "text/html",
+                    "language": null,
+                    "base": "https://api.mangaupdates.com/v1/series/10076623491/rss",
+                    "value": "MMSCANS"
+                }
+            },
+            {
+                "title": "Eleceed c.324",
+                "title_detail": {
+                    "type": "text/plain",
+                    "language": null,
+                    "base": "https://api.mangaupdates.com/v1/series/10076623491/rss",
+                    "value": "Eleceed c.324"
+                },
                 "summary": "NIGHT SCANS",
                 "summary_detail": {
                     "type": "text/html",
@@ -2415,22 +2431,6 @@
                     "language": null,
                     "base": "https://api.mangaupdates.com/v1/series/10076623491/rss",
                     "value": "MMSCANS"
-                }
-            },
-            {
-                "title": "Eleceed c.318",
-                "title_detail": {
-                    "type": "text/plain",
-                    "language": null,
-                    "base": "https://api.mangaupdates.com/v1/series/10076623491/rss",
-                    "value": "Eleceed c.318"
-                },
-                "summary": "NIGHT SCANS",
-                "summary_detail": {
-                    "type": "text/html",
-                    "language": null,
-                    "base": "https://api.mangaupdates.com/v1/series/10076623491/rss",
-                    "value": "NIGHT SCANS"
                 }
             }
         ]

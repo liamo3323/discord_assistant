@@ -50,26 +50,22 @@ async def dailies():
         # minutes, _ = divmod(remainder, 60)
         # print(f"Sleeping for {int(hours)} hours and {int(minutes)} minutes.")
         # #-------------------------------------------------------------------
-        await asyncio.sleep(3600)
+        await asyncio.sleep(3600) # Sleep for 1 hour
 
 #---------- GAME PRICE FUNCTIONS --------------
 
 async def check_below_price():
-    tracking_info = await get_json_file("web_yoinking/tracking_game_list.json")
+    yoinked_info = await get_json_file("web_yoinking/tracking_game_prices.json")
 
-    with open("web_yoinking/tracking_game_prices.json", 'r') as file:
-        yoinked_info = json.load(file)
+    for yoinked in yoinked_info:
+        target_price = float(yoinked['target_price'])
+        price = float(yoinked['price_track_key'].replace("~", "").replace("\u00a3", ""))
 
-    for x in range (len(tracking_info)):
-        target_price = float(tracking_info[x]['target_price'])
-        official_price = float(yoinked_info[x]['price_official'].replace("~", "").replace("\u00a3", ""))
-        key_price = float(yoinked_info[x]['price_key'].replace("~", "").replace("\u00a3", ""))
-
-        if target_price > official_price or target_price > key_price:
-            print(f"{tracking_info[x]['name']} is below the set price of {tracking_info[x]['target_price']}")
+        if target_price > price:
+            print(f"{yoinked['name']} is below the set price of {yoinked['target_price']}")
 
             channel = await client.fetch_channel(845742634244898836)
-            await channel.send(embed= await send_embed(yoinked_info[x]))
+            await channel.send(embed= await send_embed(yoinked))
 
 async def is_good_price(original_price, discounted_price, historical_low):
     # Calculate the discount percentage
@@ -149,12 +145,9 @@ async def check_new_chapter():
 
 #----------------------------------------------
 
-
-
 @client.event
 async def on_ready():
     print(f'Logged in as {client.user}')
-
 
 @client.event
 async def on_message(message):
@@ -175,39 +168,36 @@ async def on_message(message):
             await message.channel.send(f"Game '{name}' could not be found.")
         
     if '!track_view' in message.content.lower():
-        tracking_list_file = await get_json_file("web_yoinking/tracking_game_list.json")
         tracking_data_file = await get_json_file("web_yoinking/tracking_game_prices.json")
         embed = discord.Embed(title="Currently Tracked Games Prices", colour=0x00b0f4, timestamp=datetime.datetime.now(), description="")
-        
-        if len(tracking_list_file) == len(tracking_data_file):
 
+        good_deal_list = []
+        value_list = []
 
-            good_deal_list = []
-            value_list = []
-            for x in range(len(tracking_list_file)):
-                discounted_price = tracking_data_file[x]['price_key']
-                vendor = tracking_data_file[x]['price_key_vendor']
-                original_price = tracking_data_file[x]['price_official']
-                historical_low = tracking_data_file[x]['historical_low']
+        for tracking in tracking_data_file:
+            tracking_price = tracking['price_track_key']
+            vendor = tracking['price_track_key_vendor']
+            original_price = tracking['normal_price']
+            historical_low = tracking['historical_low']
 
-                if await is_good_price(float(original_price.replace("~", "").replace("\u00a3", "")), float(discounted_price.replace("~", "").replace("\u00a3", "")), float(historical_low)):
-                    good_deal_list.append(f"**[{tracking_data_file[x]['name']}]({tracking_data_file[x]['url']})**\nCurrent Price - {discounted_price}\nVendor - {vendor}\n\nTracking Price - £{tracking_list_file[x]['target_price']}\nHistorical low - £{tracking_data_file[x]['historical_low']}\n-----------------------\n")
-                
-                else:
-                    value_list.append(f"**[{tracking_data_file[x]['name']}]({tracking_data_file[x]['url']})**\nCurrent Price - {discounted_price}\nVendor - {vendor}\n\nTracking Price - £{tracking_list_file[x]['target_price']}\nHistorical low - £{tracking_data_file[x]['historical_low']}\n-----------------------\n")
-                    
-
-            if len(good_deal_list) != 0:
-                embed.add_field(name="", value="🔥 Best Deals! 🔥", inline=False)
-                for x in good_deal_list:
-                    embed.add_field(name="", value=x, inline=False)
-                
-            embed.add_field(name="", value="Normal Deals",inline=False)
+            if await is_good_price(float(original_price.replace("~", "").replace("\u00a3", "")), float(tracking_price.replace("~", "").replace("\u00a3", "")), float(historical_low)):
+                good_deal_list.append(f"**[{tracking['name']}]({tracking['url']})**\nCurrent Price - {tracking_price}\nVendor - {vendor}\n\nTracking Price - £{tracking['target_price']}\nHistorical low - £{tracking['historical_low']}\n-----------v------------\n")
             
-            for x in value_list:
-                embed.add_field(name="", value=x, inline=False)
+            else:
+                value_list.append(f"**[{tracking['name']}]({tracking['url']})**\nCurrent Price - {tracking_price}\nVendor - {vendor}\n\nTracking Price - £{tracking['target_price']}\nHistorical low - £{tracking['historical_low']}\n-----------------------\n")
                 
-            await message.channel.send(embed=embed)
+
+        if len(good_deal_list) != 0:
+            embed.add_field(name="", value="🔥 Best Deals! 🔥", inline=False)
+            for x in good_deal_list:
+                embed.add_field(name="", value=x, inline=False)
+            
+        embed.add_field(name="", value="Normal Deals",inline=False)
+        
+        for x in value_list:
+            embed.add_field(name="", value=x, inline=False)
+            
+        await message.channel.send(embed=embed)
 
     if '!track_edit' in message.content.lower():
         content = str(message.content).split()

@@ -1,26 +1,26 @@
 [
     {
-        "name": "Mato Seihei no Slave",
-        "url": "https://api.mangaupdates.com/v1/series/24893347544/rss"
+        "name": "The Beginning After the End",
+        "url": "https://weebcentral.com/series/01J76XYE23859ZWDP7BJ520AKY/The-Beginning-After-The-End",
+        "latest_chap": "0",
+        "updated_chap": "Episode 203"
     },
     {
-        "name": "Rebuild World",
-        "url": "https://api.mangaupdates.com/v1/series/73393743472/rss"
+        "name": "Reformation of the Deadbeat Noble",
+        "url": "https://asuracomic.net/series/reformation-of-the-deadbeat-noble-a624fb66",
+        "latest_chap": "0",
+        "updated_chap": "133"
     },
     {
-        "name": "The Lazy Lord Masters the Sword",
-        "url": "https://api.mangaupdates.com/v1/series/43476221806/rss"
-    },
-    {
-        "name": "Kaijuu 8",
-        "url": "https://api.mangaupdates.com/v1/series/19101650311/rss"
+        "name": "Solo Leveling: Ragnarok",
+        "url": "https://asuracomic.net/series/solo-leveling-ragnarok-ded5d1c6",
+        "latest_chap": "0",
+        "updated_chap": "37"
     },
     {
         "name": "Chainsaw Man",
-        "url": "https://api.mangaupdates.com/v1/series/75336092483/rss"
-    },
-    {
-        "name": "Eleceed",
-        "url": "https://api.mangaupdates.com/v1/series/10076623491/rss"
+        "url": "https://weebcentral.com/series/01J76XYCRVY3QGYAMRR3STW941/Chainsaw-Man",
+        "latest_chap": "0",
+        "updated_chap": "Chapter 190"
     }
 ]

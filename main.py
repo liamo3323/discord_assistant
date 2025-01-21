@@ -25,7 +25,6 @@ client = discord.Client(intents=intents)
 
 async def dailies():
     # Command run before loop
-    await init_update_feed()
     while True:
         print("Yoinking 'tracking_game_list' data...")
         await yoink_games_info()
@@ -108,40 +107,29 @@ async def send_embed(game):
 #---------- MANGA TRACKING FUNCTIONS ----------
 
 async def check_new_chapter():
+    await init_update_feed()
     tracking_list = await get_json_file("manga_updates/tracking_chapter_list.json")
-    tracking_data = await get_json_file("manga_updates/tracking_manga_info.json")
 
     for tracking in tracking_list:
         url = tracking['url']
-        feed = feedparser.parse(url)
+        name = tracking['name']
+        latest_chapter = tracking['latest_chap']
+        updated_chapter = tracking['updated_chap']
 
-        name = feed['feed']['title'].replace(' - Releases on MangaUpdates', '')
-        latest_chapter = feed['entries'][0]['title']
-        entries = feed['entries']
+        if latest_chapter != updated_chapter:
+            print(f"New chapter for {name}!")
 
-        for tracking_info in tracking_data:
-            if name == tracking_info['name']:
-                if latest_chapter != tracking_info['latest_chapter']:
-                    print(f"New chapter for {name}!")
+            embed = discord.Embed(title=name,description=f"",colour=0x00b0f4,timestamp=datetime.datetime.now())
+            embed.add_field(name="New Chapter!",
+                            value=f"{name}! - {updated_chapter}",
+                            inline=False)
+            embed.set_footer(text="Manga Tracking")
+            channel = await client.fetch_channel(845742634244898836)
+            await channel.send(embed=embed)
 
-
-                    embed = discord.Embed(title=name,
-                    description=f"",
-                    colour=0x00b0f4,
-                    timestamp=datetime.datetime.now())
-                    embed.add_field(name="New Chapter!",
-                                    value=f"New chapter for {name}! - {latest_chapter}",
-                                    inline=False)
-                    embed.set_footer(text="Manga Tracking")
-                    channel = await client.fetch_channel(845742634244898836)
-                    await channel.send(embed=embed)
-
-                    tracking_info['latest_chapter'] = latest_chapter
-                    tracking_info['entries'] = entries
- 
-                    with open('manga_updates/tracking_manga_info.json', 'w') as json_file:
-                        json.dump(tracking_data, json_file, indent=4)
-                    break
+            tracking['latest_chap'] = updated_chapter
+            with open('manga_updates/tracking_chapter_list.json', 'w') as file:
+                json.dump(tracking, file, indent=4)
 
 #----------------------------------------------
 

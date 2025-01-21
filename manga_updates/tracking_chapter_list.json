@@ -18,9 +18,21 @@
         "updated_chap": "37"
     },
     {
+        "name": "Rebuild World",
+        "url": "https://weebcentral.com/series/01J76XYD8HY3KSMY47BCEBX8PF/Rebuild-World",
+        "latest_chap": "0",
+        "updated_chap": "63"
+    },
+    {
         "name": "Chainsaw Man",
         "url": "https://weebcentral.com/series/01J76XYCRVY3QGYAMRR3STW941/Chainsaw-Man",
         "latest_chap": "0",
         "updated_chap": "Chapter 190"
+    },
+    {
+        "name": "Kaiju No.8",
+        "url": "https://asuracomic.net/series/reformation-of-the-deadbeat-noble-a624fb66",
+        "latest_chap": "0",
+        "updated_chap": "Chapter 120"
     }
 ]
